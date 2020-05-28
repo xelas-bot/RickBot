@@ -1,4 +1,11 @@
 import discord
+import io
+
+import os.path
+
+file = discord.File("C:/Users/Shrey Patel/Downloads/zeken.png", "zeken.jpg")
+embed = discord.Embed()
+embed.set_image(url="attachment://zeken.jpg")
 
 client = discord.Client()
 
@@ -12,6 +19,8 @@ async def on_message(message):
         return
 
     if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+        await message.channel.send("u suck")
+        await message.channel.send(file=file, embed=embed)
+
 
 client.run('NzE1MzQwMzA2MTQ4NjIyNDk2.XtAcRA.2ItxydtapLK0WnJzLCQGXoq2JtY')
