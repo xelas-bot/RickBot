@@ -23,4 +23,4 @@ async def on_message(message):
         await message.channel.send(file=file, embed=embed)
 
 
-client.run('NzE1MzQwMzA2MTQ4NjIyNDk2.XtAcRA.2ItxydtapLK0WnJzLCQGXoq2JtY')
+client.run('NzE1MzQwMzA2MTQ4NjIyNDk2.XtAeeA.aCOhO1po4aFiditxB7LS_AdyCM4')

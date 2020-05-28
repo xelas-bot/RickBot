@@ -42,3 +42,6 @@ async def on_message(message):
         elif message.content.startswith("!odd") and x % 2 != 1:
             await message.channel.send("ur name must be ricky!")
             return
+
+
+client.run('NzE1MzQwMzA2MTQ4NjIyNDk2.XtAeeA.aCOhO1po4aFiditxB7LS_AdyCM4')
