@@ -1,5 +1,6 @@
 import random
 import discord
+import json
 evenFlag = 1
 game = False
 client = discord.Client()
@@ -8,6 +9,7 @@ x = 0
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
+    
 
 @client.event
 async def on_message(message):
@@ -43,5 +45,6 @@ async def on_message(message):
             await message.channel.send("ur name must be ricky!")
             return
 
-
-client.run('NzE1MzQwMzA2MTQ4NjIyNDk2.XtAeeA.aCOhO1po4aFiditxB7LS_AdyCM4')
+with open("auth.json") as f:
+    data = json.load(f)
+    client.run(data["token"])
