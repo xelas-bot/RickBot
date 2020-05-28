@@ -36,13 +36,24 @@ async def on_message(message):
     except Exception:
         return
     
-    args = shlex.split(message.content)
+    try:
+        args = shlex.split(message.content)
+    except Exception:
+        print('someone is obese')
+        return
+    
     command = args[0][1:]
     del args[0]
 
     # !gamestart cards
 
-    if command == ''
+    if command == 'addseller':
+        file = discord.File("C:/Users/Shrey Patel/Downloads/zeken.png", "zeken.jpg")
+        embed = discord.Embed()
+        embed.set_image(url="attachment://zeken.jpg")
+        await message.channel.send("u suck")
+        await message.channel.send(file=file, embed=embed)
+        
 
     if command == 'roll':
         if len(args) > 0 and args[0].isdigit() and int(args[0]) > 1:
