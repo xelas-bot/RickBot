@@ -9,7 +9,8 @@ import urllib.parse
 import json
 import pymongo
 from pymongo import MongoClient
-from res.Player import Player
+import player
+from RickBot.Bot.res.Player import Player
 
 with open("auth.json") as f:
     auth = json.load(f)

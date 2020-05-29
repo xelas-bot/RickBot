@@ -16,11 +16,20 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$hello'):
+    if message.content.startswith('!mycard'):
         file = discord.File("C:/Users/Shrey Patel/Downloads/zeken.png", "zeken.jpg")
-        embed = discord.Embed()
+        embed = discord.Embed(description="He WILL fuck your bitch", color=0xeded87)
+        embed.set_author(name="ZeKenneth", icon_url="https://www.howtogeek.com/wp-content/uploads/2018/06/shutterstock_1006988770.png")
+
+
+        embed.add_field(name="Weight", value="0", inline=True)
+        embed.add_field(name="Power", value="0", inline=True)
+        embed.add_field(name="Sex Appeal", value="4", inline=True)
+        embed.add_field(name="Negro Levels", value="7", inline=True)
         embed.set_image(url="attachment://zeken.jpg")
-        await message.channel.send("u suck")
+
+
+        await message.channel.send("Your Card:")
         await message.channel.send(file=file, embed=embed)
 
 
