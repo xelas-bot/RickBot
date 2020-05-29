@@ -1,45 +1,46 @@
-import discord
 from discord.ext import commands
 import pymongo
 from pymongo import MongoClient
 import urllib.parse
-cluster = MongoClient("mongodb+srv://dbAdmin:cisd1158@disc-valqe.gcp.mongodb.net/test")
+import json
+playerCreated = False
+
+
+with open("auth.json") as f:
+    auth = json.load(f)
+    global cluster
+    cluster = MongoClient(auth["mongo_key"])
 
 db = cluster["game"]
-
 collection = db["players"]
 
+class Player:
+    def __init__(self, id, username, currency=500, exp=0, cards=[]):
+        self.id = id
+        self.username = username
+        self.currency = currency
+        self.cards = cards
 
+        post = {"_id": self.id, "username": self.username, "currency": self.currency, "cards": self.cards}
+        collection.insert_one(post)
 
+        print("Created player")
+    
+    def change_Currency(self, new_currency):
+        self.currency = new_currency
+        self.set_db()
+    
 
-
-client = discord.Client()
-
-
-@client.event
-async def on_ready():
-    print(f'{client.user} has connected to Discord!')
-
-
-
-
-
-@client.event
-async def on_message(ctx):
-    print(f"{ctx.channel}: {ctx.author}: {ctx.author.name}: {ctx.content}")
-    myquery = {"_id": ctx.author.id}
-    if (collection.count_documents(myquery) == 0):
-        if "!createplayer" in str(ctx.content.lower()):
-            post = {"_id": ctx.author.id, "score": 1, "EXP": 100}
-            collection.insert_one(post)
-            await ctx.channel.send('You are in!')
-    else:
-        if "!createplayer" in str(ctx.content.lower()):
-            query = {"_id": ctx.author.id}
-
-
-            await ctx.channel.send('You have already created a character, please choose your starter deck with !choose')
-
+    def set_db(self):
+        myquery = {"_id": self.id}
+        newvalues = { "$set": {"currency": self.currency, "cards": self.cards}}
+        collection.update_one(myquery, newvalues)
+    
+    def get_db(self):
+        data = collection.find_one({"_id": self.id})
+        self.currency = data["currency"]
+        self.cards = data["cards"]
+        
 
 ##user = collection.find(query)
 ##            for result in user:
@@ -54,4 +55,3 @@ async def on_message(ctx):
 
 
 
-client.run("NzE1MzQwMzA2MTQ4NjIyNDk2.XtAeeA.aCOhO1po4aFiditxB7LS_AdyCM4")

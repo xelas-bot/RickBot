@@ -4,7 +4,24 @@ import math
 import random
 import shlex
 import asyncio
+from discord.ext import commands
+import pymongo
+from pymongo import MongoClient
+import urllib.parse
+import json
 
+playerCreated = False
+
+
+with open("auth.json") as f:
+    auth = json.load(f)
+    global cluster
+    cluster = MongoClient(auth["mongo_key"])
+
+db = cluster["game"]
+
+collection = db["players"]
+playerinfo = db["playerinfo"]
 
 # Auth bot
 bot = discord.Client()
@@ -76,6 +93,9 @@ async def on_message(message):
             await message.channel.send('wow u almost have dlz\'s iq')
         else:
             await message.channel.send('ur dumbness is almost as big as shrey\'s weight')
+
+
+    
  
 
 with open("auth.json") as f:

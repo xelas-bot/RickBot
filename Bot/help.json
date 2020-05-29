@@ -1,0 +1,6 @@
+{
+    "help"     : "shows this help page",
+    "create"   : "become a part of the game",
+    "list"     : "list all of your cards",
+    "show"     : "[show id] shows a specific card"
+}
