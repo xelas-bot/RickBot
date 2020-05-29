@@ -1,24 +1,11 @@
 {
     "1": {
-        "image"      : "C:/Users/Shrey Patel/PycharmProjects/RickBot/RickBot/Bot/data/zeken.png",
+        "image"      : "https://i.imgur.com/iZBbjem.jpg",
         "name"       : "ZeKenneth",
         "weight"     : 100,
-        "rarity"     : 1,
-        "desc"       : "Classic Kenneth in his natural environment",
+        "rarity"     : "Common",
+        "desc"       : "Hide your wife.",
         "strength"   : 1,
-        "defense"    : 1,
-        "cost"       : 1,
-        "class"      : "Support"
-    },
-    "2": {
-        "image"      : "C:/Users/Shrey Patel/PycharmProjects/RickBot/RickBot/Bot/data/zeken.png",
-        "name"       : "ZePowerfulKenneth",
-        "weight"     : 100,
-        "rarity"     : 2,
-        "desc"       : "Kenneth has become apart of his natural environment",
-        "strength"   : 2,
-        "defense"    : 2,
-        "cost"       : 3,
-        "class"      : "Troop"
+        "defense"    : 1
     }
 }

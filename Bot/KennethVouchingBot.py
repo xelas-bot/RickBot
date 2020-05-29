@@ -18,7 +18,7 @@ async def on_message(message):
 
     if message.content.startswith('!mycard'):
         file = discord.File("C:/Users/Shrey Patel/Downloads/zeken.png", "zeken.jpg")
-        embed = discord.Embed(description="He WILL fuck your bitch", color=0xeded87)
+        embed = discord.Embed(description="He WILL fuck your bitch", color=15592839)
         embed.set_author(name="ZeKenneth", icon_url="https://www.howtogeek.com/wp-content/uploads/2018/06/shutterstock_1006988770.png")
         embed.set_thumbnail(url="https://cdn.discordapp.com/embed/avatars/0.png")
 
