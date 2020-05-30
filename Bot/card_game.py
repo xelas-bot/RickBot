@@ -358,7 +358,7 @@ async def on_message(message):
                         await message.channel.send(embed=embed)
                         user = message.author
                         def check_list(message):
-                            return message.author == user and (message.content == "!back" or message.content == "!next")
+                            return message.author == user and (message.content == "!back" or message.content == "!next" or "!list" in message.content)
                         try:
                             response = await bot.wait_for("message",timeout = 60.0, check=check_list)
                             if response.content == "!back":
@@ -366,11 +366,13 @@ async def on_message(message):
                                     return
                                 else:
                                     page -= 1
-                            if response.content == "!next":
+                            elif response.content == "!next":
                                 if page * page_len + page_len > total:
                                     return
                                 else:
                                     page += 1
+                            else:
+                                return
                         except Exception:
                             return
             else:
@@ -390,7 +392,7 @@ async def on_message(message):
                     await message.channel.send(embed=embed)
                     user = message.author
                     def check_list(message):
-                        return message.author == user and (message.content == "!back" or message.content == "!next")
+                        return message.author == user and (message.content == "!back" or message.content == "!next" or "!list" in message.content)
                     try:
                         response = await bot.wait_for("message",timeout = 60.0, check=check_list)
                         if response.content == "!back":
@@ -398,11 +400,13 @@ async def on_message(message):
                                 return
                             else:
                                 page -= 1
-                        if response.content == "!next":
+                        elif response.content == "!next":
                             if page * page_len + page_len > total:
                                 return
                             else:
                                 page += 1
+                        else:
+                            return
                     except Exception:
                         return
         else:
