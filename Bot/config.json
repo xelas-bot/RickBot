@@ -1,4 +1,6 @@
 {
-    "prefix"   : "!",
-    "join_msg" : "Type %create to begin collecting ricks!"
+    "prefix"         : "!",
+    "join_msg"       : "Type %create to begin collecting ricks!",
+    "page_len"       : 20,
+    "administrators" : [294639520245219340, 348149413618647040, 302515756976046081]
 }

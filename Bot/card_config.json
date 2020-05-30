@@ -1,11 +1,12 @@
 {
+    "Drop_Rate": 0.025,
     "Common": {
-        "drop"    : 1,
+        "drop"    : 0,
         "currency": 100,
         "color"   : 6618980
     },
     "Uncommon": {
-        "drop"    : 0.6,
+        "drop"    : 0.7,
         "currency": 250,
         "color"   : 46335
     },
@@ -15,18 +16,18 @@
         "color"   : 16729670
     },
     "Epic": {
-        "drop"    : 0.94,
+        "drop"    : 0.97,
         "currency": 1000,
         "color"   : 13107400
     },
     "Legendary": {
-        "drop"    : 0.98,
+        "drop"    : 0.985,
         "currency": 2500,
         "color"   : 15592809
     },
     "EX": {
-        "drop"    : 0.9925,
-        "currency": 6969,
-        "color"   : 16777215
+        "drop"    : 0.998,
+        "currency": 10000,
+        "color"   : 16777214
     }
 }

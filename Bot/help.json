@@ -5,5 +5,5 @@
     "show"     : "[show id] shows a specific card",
     "bal"      : "shows your current balance",
     "tradeup"  : "Trade 10 cards of the same quality to gain a card of a higher quality",
-    "re-roll"  : "Remove 3 cards of the same quality and gain a different one of the same quality"
+    "reroll"  : "Remove 3 cards of the same quality and gain a different one of the same quality"
 }

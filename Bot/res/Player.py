@@ -34,7 +34,7 @@ db = cluster["game"]
 collection = db["players"]
 
 class Player:
-    def __init__(self, id, username, currency=500, exp=0, cards=[]):
+    def __init__(self, id, username, currency=100, cards=[]):
         self.id = id
         self.username = username
         self.currency = currency
@@ -60,12 +60,27 @@ class Player:
         self.currency = data["currency"]
         self.cards = data["cards"]
     
+    def delete(self, cards):
+        self.cards = [x for i, x in enumerate(self.cards) if not str(i + 1) in cards]
+        self.set_db()
+    
     def spawn(self, rarity):
-        print(self.name + " got a " + rarity)
         self.get_db()
         drops = card_rarity[rarity]
         drop = random.choice(drops)
-        self.cards.append(drop)
+        print(self.username + " got a " + card_data[drop]["name"] + " (" + card_data[drop]["rarity"] + ")")
+        self.card_data.append(drop)
         self.currency += card_config[rarity]["currency"]
         self.set_db()
         return drop
+    
+    def give(self, card):
+        try:
+            if int(card) >= 1 and int(card) <= len(card_data):
+                self.cards.append(str(card))
+                print(self.username + " got a " + card_data[str(card)]["name"] + " (" + card_data[str(card)]["rarity"] + ")")
+            else:
+                print("Invalid card id")
+        except Exception:
+            print("Not a card id")
+        self.set_db()
