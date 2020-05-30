@@ -5,23 +5,28 @@
         "color"   : 6618980
     },
     "Uncommon": {
-        "drop"    : 0.85,
+        "drop"    : 0.6,
         "currency": 250,
         "color"   : 46335
     },
     "Rare": {
-        "drop"    : 0.95,
+        "drop"    : 0.85,
         "currency": 500,
         "color"   : 16729670
     },
     "Epic": {
-        "drop"    : 0.98,
+        "drop"    : 0.94,
         "currency": 1000,
         "color"   : 13107400
     },
     "Legendary": {
-        "drop"    : 0.995,
+        "drop"    : 0.98,
         "currency": 2500,
         "color"   : 15592809
+    },
+    "EX": {
+        "drop"    : 0.9925,
+        "currency": 6969,
+        "color"   : 16777215
     }
 }

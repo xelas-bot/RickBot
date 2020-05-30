@@ -1,3 +1,4 @@
 {
-    "prefix": "!"
+    "prefix"   : "!",
+    "join_msg" : "Type %create to begin collecting ricks!"
 }
