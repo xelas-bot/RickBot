@@ -1,5 +1,6 @@
 {
-    "Drop_Rate": 0.025,
+    "Drop_Rate"   : 0.025,
+    "Sell_Rate"   : 0.2,
     "Common": {
         "drop"    : 0,
         "currency": 100,

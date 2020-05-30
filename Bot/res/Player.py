@@ -45,8 +45,9 @@ class Player:
         collection.insert_one(post)
         print("Created player")
 
-    def change_Currency(self, new_currency):
-        self.currency = new_currency
+    def add_currency(self, currency):
+        self.get_db()
+        self.currency += currency
         self.set_db()
     
 
@@ -60,21 +61,33 @@ class Player:
         self.currency = data["currency"]
         self.cards = data["cards"]
     
+    def compare(self, index, card_ids):
+        self.get_db()
+        same = True
+        for i, c in zip(index, card_ids):
+            if int(i) - 1 >= len(self.cards) or self.cards[int(i) - 1] != c:
+                same = False
+        return same
+
     def delete(self, cards):
+        self.get_db()
         self.cards = [x for i, x in enumerate(self.cards) if not str(i + 1) in cards]
         self.set_db()
     
-    def spawn(self, rarity):
+    def spawn(self, rarity, exclude = []):
         self.get_db()
-        drops = card_rarity[rarity]
+        drops = [x for x in card_rarity[rarity] if not x in exclude]
+        if len(drops) <= 0:
+            drops = card_rarity[rarity]
         drop = random.choice(drops)
         print(self.username + " got a " + card_data[drop]["name"] + " (" + card_data[drop]["rarity"] + ")")
-        self.card_data.append(drop)
-        self.currency += card_config[rarity]["currency"]
+        self.cards.append(drop)
+        self.currency += card_config[rarity]["currency"] * (1 - card_config["Sell_Rate"])
         self.set_db()
         return drop
     
     def give(self, card):
+        self.get_db()
         try:
             if int(card) >= 1 and int(card) <= len(card_data):
                 self.cards.append(str(card))
@@ -84,3 +97,7 @@ class Player:
         except Exception:
             print("Not a card id")
         self.set_db()
+    
+    def has_currency(self, currency):
+        self.get_db()
+        return self.currency >= currency

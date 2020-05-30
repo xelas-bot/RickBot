@@ -19,6 +19,12 @@ with open("auth.json") as f:
     cluster = MongoClient(auth["mongo_key"])
     f.close()
 
+
+# Mongo Database
+db = cluster["game"]
+db_players = db["players"]
+db_market = db["market"]
+
 # card config
 with open("card_config.json", encoding='utf-8') as f:
     global card_config
@@ -49,10 +55,44 @@ def update_players():
         player = Player(id=x["_id"], username=x["username"], currency=x["currency"], cards=x["cards"])
         players[x["_id"]] = player
     return players
+##Market Commands
+def update_market():
+    market = []
+    for x in db_market.find():
+        listing = {"user_id": x["user_id"], "card_price": x["card_price"], "card_id": x["card_id"]}
+        market.append(listing)
+    return market
 
-# Mongo Database
-db = cluster["game"]
-db_players = db["players"]
+def create_listing(user_id, card_price, card_id):
+    listing = {"user_id": user_id, "card_price": card_price, "card_id": card_id}
+    db_market.insert_one(listing)
+
+async def show_card(message, card_id, title, show_desc=True, footer=None, mention=False):
+    embed = discord.Embed(title=cards[card_id]["name"],description="*" + cards[card_id]["desc"] + "*", color=card_config[cards[card_id]["rarity"]]["color"])
+    if message.channel.guild.icon_url == None:
+        embed.set_author(name=title, icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
+    else:
+        embed.set_author(name=title, icon_url=message.channel.guild.icon_url)
+    embed.set_thumbnail(url=message.author.avatar_url)
+    embed.set_image(url=cards[card_id]["image"])
+
+    if show_desc:
+        embed.add_field(name="Rarity", value=cards[card_id]["rarity"], inline=True)
+        for x in cards[card_id]:
+            if not x in ["name", "desc", "image", "rarity"]:
+                if len(str(x)) == 1:
+                    embed.add_field(name=str(x), value=str(cards[card_id][x]), inline=True)
+                else:
+                    name = str(x)[0].upper() + str(x)[1:]
+                    embed.add_field(name=name, value=str(cards[card_id][x]), inline=True)
+    
+    if footer != None:
+        embed.set_footer(text=footer)
+
+    if mention:
+        await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
+    else:
+        await message.channel.send(embed=embed)
 
 # Auth bot
 bot = discord.Client()
@@ -109,16 +149,7 @@ async def on_message(message):
                     drop = players[message.author.id].spawn("Uncommon")
                 else:
                     drop = players[message.author.id].spawn("Common")
-                
-                embed = discord.Embed(title=cards[drop]["name"],description="*" + cards[drop]["desc"] + "*", color=card_config[cards[drop]["rarity"]]["color"])
-                if message.channel.guild.icon_url == None:
-                    embed.set_author(name="You caught a:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
-                else:
-                    embed.set_author(name="You caught a:", icon_url=message.channel.guild.icon_url)
-                embed.set_thumbnail(url=message.author.avatar_url)
-                embed.set_image(url=cards[drop]["image"])
-
-                await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
+                await show_card(message, drop, message.author.name + " caught a:", False, None, True)
             return
     except Exception:
         return
@@ -146,7 +177,7 @@ async def on_message(message):
         msg = ''
         for x in help_msgs:
            msg += '\n' + config['prefix'] + x + ': ' + help_msgs[x]
-        embed = discord.Embed(description=msg, color=4605510)
+        embed = discord.Embed(description=msg, color=config["embed_color"])
         embed.set_author(name="Help", icon_url="https://img.icons8.com/carbon-copy/2x/question-mark.png")
         await message.channel.send(embed=embed)
 
@@ -179,12 +210,11 @@ async def on_message(message):
                 
                 try:
                     rarity = check_rarity(player_cards[int(args[0]) - 1])
-                    print(rarity)
+                    card_types = []
                     for x in args[1:10]:
                         if check_rarity(player_cards[int(x) - 1]) != rarity:
-                            print(player_cards[int(x) - 1])
-                            print(check_rarity(player_cards[int(x) - 1]))
                             same_rarity = False
+                            card_types.append(player_cards[int(args[0]) - 1])
                 except Exception:
                     await message.channel.send("Select 10 cards of the same quality to trade up! Use + [" + config["prefix"] + "tradeup id1 id2 ... id10]")
                 
@@ -205,6 +235,9 @@ async def on_message(message):
                             response = await bot.wait_for('message',timeout=30.0,check=check_tradeup)
                             if response.content == "!tradeup_confirm":
                                 players = update_players()
+                                if not players[user.id].compare(args[:10], card_types):
+                                    await message.send("A Card is missing from your collection!")
+                                    return
                                 players[user.id].delete(args[:10])
                                 if rarity == "Common":
                                     drop = players[user.id].spawn("Uncommon")
@@ -216,14 +249,8 @@ async def on_message(message):
                                     drop = players[user.id].spawn("Legendary")
                                 elif rarity == "Legendary":
                                     drop = players[user.id].spawn("EX")
-                                embed = discord.Embed(title=cards[drop]["name"],description="*" + cards[drop]["desc"] + "*", color=card_config[cards[drop]["rarity"]]["color"])
-                                if message.channel.guild.icon_url == None:
-                                    embed.set_author(name="You traded up to a:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
-                                else:
-                                    embed.set_author(name="You traded up to a:", icon_url=message.channel.guild.icon_url)
-                                embed.set_thumbnail(url=message.author.avatar_url)
-                                embed.set_image(url=cards[drop]["image"])
-                                await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
+                                
+                                await show_card(message, drop, message.author.name + " traded up to a:", False, None, True)
                             else:
                                 await message.channel.send("Do only one tradeup at a time! First tradeup is cancelled.")
                         except Exception:
@@ -241,17 +268,15 @@ async def on_message(message):
                 player_cards = players[message.author.id].cards
                 same_rarity = True
                 rarity = ''
+                card_types = []
                 try:
                     rarity = check_rarity(player_cards[int(args[0]) - 1])
-                    print(rarity)
                     for x in args[1:3]:
                         if check_rarity(player_cards[int(x) - 1]) != rarity:
-                            print(player_cards[int(x) - 1])
-                            print(check_rarity(player_cards[int(x) - 1]))
                             same_rarity = False
+                        card_types.append(player_cards[int(args[0]) - 1])
                 except Exception:
                     await message.channel.send("Select 3 cards of the same quality to reroll! Use [" + config["prefix"] + "reroll id1 id2 id3]")
-                
                 if same_rarity:
                     desc = ''
                     for x in args[:3]:
@@ -266,27 +291,23 @@ async def on_message(message):
                         response = await bot.wait_for('message',timeout=30.0,check=check_reroll)
                         if response.content == "!reroll_confirm":
                             players = update_players()
+                            if not players[user.id].compare(args[:3], card_types):
+                                await message.channel.send("A Card is missing from your collection!")
+                                return
                             players[user.id].delete(args[:3])
                             if rarity == "Common":
-                                drop = players[user.id].spawn("Common")
+                                drop = players[user.id].spawn("Common", exclude=card_types)
                             elif rarity == "Uncommon":
-                                drop = players[user.id].spawn("Uncommon")
+                                drop = players[user.id].spawn("Uncommon", exclude=card_types)
                             elif rarity == "Rare":
-                                drop = players[user.id].spawn("Rare")
+                                drop = players[user.id].spawn("Rare", exclude=card_types)
                             elif rarity == "Epic":
-                                drop = players[user.id].spawn("Epic")
+                                drop = players[user.id].spawn("Epic", exclude=card_types)
                             elif rarity == "Legendary":
-                                drop = players[user.id].spawn("Legendary")
+                                drop = players[user.id].spawn("Legendary", exclude=card_types)
                             elif rarity == "EX":
-                                drop = players[user.id].spawn("EX")
-                            embed = discord.Embed(title=cards[drop]["name"],description="*" + cards[drop]["desc"] + "*", color=card_config[cards[drop]["rarity"]]["color"])
-                            if message.channel.guild.icon_url == None:
-                                embed.set_author(name="You rerolled a:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
-                            else:
-                                embed.set_author(name="You rerolled a:", icon_url=message.channel.guild.icon_url)
-                            embed.set_thumbnail(url=message.author.avatar_url)
-                            embed.set_image(url=cards[drop]["image"])
-                            await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
+                                drop = players[user.id].spawn("EX", exclude=card_types)
+                            await show_card(message, drop, message.author.name + " rerolled a:", False, None, True)
                         else:
                             await message.channel.send("Do only one reroll at a time! First reroll is cancelled.")
                     except Exception:
@@ -298,7 +319,7 @@ async def on_message(message):
 
     if command == "bal":
         if message.author.id in players:
-            embed = discord.Embed(description="Your current balance is: " + str(players[message.author.id].currency), color=4605510)
+            embed = discord.Embed(description="Your current balance is: " + str(players[message.author.id].currency), color=config["embed_color"])
             embed.set_author(name="Money", icon_url="https://w0.pngwave.com/png/944/747/coins-png-clip-art.png")
             await message.channel.send(embed=embed)
         else:
@@ -319,8 +340,8 @@ async def on_message(message):
                         total = len(card_collection)
                         desc = ''
                         for i, x in enumerate(card_collection[page * page_len: page * page_len + page_len]):
-                            desc += '**' + cards[str(x)]["name"] + '** | ' + cards[str(x)]["rarity"] + " | " + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
-                        embed=discord.Embed(title="Their Cards", description=desc)
+                            desc += '**' + cards[str(x)]["name"] + '**\t|\t' + cards[str(x)]["rarity"] + "\t|\t" + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
+                        embed=discord.Embed(title=other.name + "'s Cards", description=desc)
                         embed.set_footer(text="You are on page " + str(page + 1) + "/" + str(total // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
                         embed.set_author(name=other.name, icon_url=other.avatar_url)
                         await message.channel.send(embed=embed)
@@ -351,7 +372,7 @@ async def on_message(message):
                         total = len(card_collection)
                         desc = ''
                         for i, x in enumerate(card_collection[page * page_len: page * page_len + page_len]):
-                            desc += '**' + cards[str(x)]["name"] + '** | ' + cards[str(x)]["rarity"] + " | " + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
+                            desc += '**' + cards[str(x)]["name"] + '**\t|\t' + cards[str(x)]["rarity"] + "\t|\t" + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
                         embed=discord.Embed(title="Your Cards", description=desc)
                         embed.set_footer(text="You are on page " + str(page + 1) + "/" + str(total // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
                         embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
@@ -418,24 +439,7 @@ async def on_message(message):
                 x = int(args[0]) - 1
                 if x >= 0 and x < len(players[message.author.id].cards):
                     card_id = players[message.author.id].cards[x]
-
-                    embed = discord.Embed(title=cards[card_id]["name"],description="*" + cards[card_id]["desc"] + "*", color=card_config[cards[card_id]["rarity"]]["color"])
-                    if message.channel.guild.icon_url == None:
-                        embed.set_author(name="Your Card:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
-                    else:
-                        embed.set_author(name="Your Card:", icon_url=message.channel.guild.icon_url)
-                    embed.set_thumbnail(url=message.author.avatar_url)
-                    embed.set_image(url=cards[card_id]["image"])
-                    embed.add_field(name="Rarity", value=cards[card_id]["rarity"], inline=True)
-
-                    for x in cards[card_id]:
-                        if not x in ["name", "desc", "image", "rarity"]:
-                            if len(str(x)) == 1:
-                                embed.add_field(name=str(x), value=str(cards[card_id][x]), inline=True)
-                            else:
-                                name = str(x)[0].upper() + str(x)[1:]
-                                embed.add_field(name=name, value=str(cards[card_id][x]), inline=True)
-                    await message.channel.send(embed=embed)
+                    await show_card(message, card_id, message.author.name + " Card:", True, None, True)
                 else:
                     await message.channel.send("Enter a valid id (1-" + str(len(players[message.author.id].cards)) + ")")
             except Exception:
@@ -443,6 +447,15 @@ async def on_message(message):
         else:
             await message.channel.send(config["join_msg"].replace("%", config["prefix"]))
     
+    if command == 'inspect':
+        if len(args) == 0:
+            await message.channel.send("Use [" + config["prefix"] + "inspect id] to view a card!")
+        else:
+            try:
+                await show_card(message, args[0], 'View Card:', True, None, True)
+            except Exception:
+                await message.channel.send("Use a valid id (1-" + str(len(cards)) + ")")
+
     if command == 'drop':
         if message.author.id in config["administrators"]:
             drop = 0
@@ -466,15 +479,105 @@ async def on_message(message):
                     drop = players[message.author.id].spawn("Legendary")
                 else:
                     drop = players[message.author.id].spawn("Ex")
-            embed = discord.Embed(title=cards[drop]["name"],description="*" + cards[drop]["desc"] + "*", color=card_config[cards[drop]["rarity"]]["color"])
-            if message.channel.guild.icon_url == None:
-                embed.set_author(name="You caught a:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
-            else:
-                embed.set_author(name="You caught a:", icon_url=message.channel.guild.icon_url)
-            embed.set_thumbnail(url=message.author.avatar_url)
-            embed.set_image(url=cards[drop]["image"])
+            
+            await show_card(message, drop, message.author.name + " caught a:", False, None, True)
 
-            await message.channel.send("<@" + str(message.author.id) + ">", embed=embed)
+    if command == "sell":
+        if message.author.id in players:
+            if len(args) == 0:
+                await message.channel.send("Use [" + config["prefix"] + "sell id] to sell a card for some quick money! *This is not a listing on a market, use [" + config["prefix"] + "market] instead!")
+            else:
+                player_cards = players[message.author.id].cards
+                if int(args[0]) >= 1 and int(args[0]) <= len(player_cards):
+                    card_id = player_cards[int(args[0]) - 1]
+                    rarity = cards[card_id]["rarity"]
+                    price = int(card_config["Sell_Rate"] * card_config[rarity]["currency"])
+                    embed=discord.Embed(title="You are selling a " + rarity + " " + cards[card_id]["name"] + " for $" + str(price))
+                    embed.set_footer(text="Type *" + config["prefix"] + "sell_confirm* to sell!")
+                    await message.channel.send(embed=embed)
+                    user = message.author
+                    def check_sell(message):
+                        return message.author == user and "!sell" in message.content
+                    try:
+                        response = await bot.wait_for('message',timeout=30.0,check=check_sell)
+                        if response.content == "!sell_confirm":
+                            players = update_players()
+                            player_cards = players[user.id].cards
+                            if player_cards[int(args[0]) - 1] == card_id:
+                                players[user.id].delete([args[0]])
+                                players[user.id].add_currency(price)
+                                embed=discord.Embed(title="You sold a " + rarity + " " + cards[card_id]["name"] + " for $" + str(price))
+                                await message.channel.send(embed=embed)
+                            else:
+                                await message.channel.send("Card is missing from your collection!")
+                        else:
+                            await message.channel.send("Sell only one card at a time! First sell is cancelled.")
+                    except Exception:
+                        await message.channel.send("Sell cancelled!")
+                else:
+                    await message.channel.send("Enter a valid id (1-" + str(len(player_cards)))
+                    await message.channel.send("Sell cancelled!")
+        else:
+            await message.channel.send(config["join_msg"].replace("%", config["prefix"]))       
+
+    if command == "market": #!market search #
+        if message.author.id in players:
+            market = update_market()
+            if len(args) == 0:
+                page = 0
+                page_len = config["page_len"]
+                while True:
+                    market = update_market()
+                    total = len(market)
+                    desc = ''
+                    for i, x in enumerate(market[page * page_len: page * page_len + page_len]):
+                        seller_name = 'market'
+                        try:
+                            seller_name = bot.get_user(int(x["user_id"])).name
+                        except Exception:
+                            print("Is this listing from market?")
+                            pass
+                        desc += '**' + cards[x["card_id"]]["name"] + '** | ' + cards[x["card_id"]]["rarity"] + " | Seller: " + seller_name + " | id: "  + str(i + 1 + page * page_len) + " | Price: " + str(x["card_price"]) + " " + '\n'
+                    embed=discord.Embed(description=desc)
+                    embed.set_footer(text="You are on page " + str(page + 1) + "/" + str(total // page_len + 1) + ". Use *!market back* and *!market next* to scroll through the list!")
+                    embed.set_author(name="Current Market Listings", icon_url="https://melmagazine.com/wp-content/uploads/2019/07/Screen-Shot-2019-07-31-at-5.47.12-PM.png")
+                    await message.channel.send(embed=embed)
+                    user = message.author
+                    def check_list(message):
+                        return message.author == user and (message.content == "!market back" or message.content == "!market next" or "!market" in message.content)
+                    try:
+                        response = await bot.wait_for("message",timeout = 60.0, check=check_list)
+                        if response.content == "!market back":
+                            if page <= 0:
+                                return
+                            else:
+                                page -= 1
+                        if response.content == "!market next":
+                            if page * page_len + page_len > total:
+                                return
+                            else:
+                                page += 1
+                    except Exception:
+                        return
+            '''
+            elif args[0] == "buy":
+                selectedcard = args[1]
+                cardList = update_market
+                cost = cardList[selectedcard - 1]["card_price"]
+                
+                if players[message.author.id].hasmoney(cardlist[selectedcard-1]):
+                    del cardlist[selectedcard - 1]:
+                    players[message.author.id][cards].appened(cardlist[selectedcard - 1])
+                    players[message.author.id]["currency"] = int( players[message.author.id]["currency"]) - int(cost)
+                
+                
+
+
+                    
+                '''
+        else:
+            await message.channel.send(config["join_msg"].replace("%", config["prefix"]))
+
 
 
 with open("auth.json") as f:

@@ -9,7 +9,7 @@
         "defense"    : 1
     },
     "2": {
-        "image"      : "https://i.imgur.com/6COuUMx.jpg",
+        "image"      : "https://media.discordapp.net/attachments/706686059605393498/716394962236735579/aarya_atluri.png?width=436&height=611",
         "name"       : "*Predator* Aarya Atluri",
         "weight"     : 15000,
         "rarity"     : "Epic",
@@ -40,7 +40,7 @@
         "name"       : "Judge Shrey",
         "weight"     : 99999,
         "rarity"     : "Epic",
-        "desc"       : "Holding down the team.",
+        "desc"       : "Bringing order and justice.",
         "strength"   : 1,
         "defense"    : 99
     },
@@ -69,21 +69,21 @@
         "weight"     : "off the charts",
         "rarity"     : "Rare",
         "desc"       : "This rogue shinobi raids villages for candies and pastries.",
-        "strength"   : 37,
+        "strength"   : 97,
         "defense"    : 150
     },
     "9": {
-        "image"      : "https://i.imgur.com/NLdlqgl.jpg",
+        "image"      : "https://media.discordapp.net/attachments/706686059605393498/716402630326485032/whale_chang.png?width=436&height=611",
         "name"       : "Aaron 'Whale' Chang",
         "weight"     : "7120302.87",
         "rarity"     : "Common",
         "desc"       : "This water type pokemon is related to Wailord.",
         "BMI"        : 72.4,
-        "strength"   : 37,
-        "defense"    : 150
+        "strength"   : 3,
+        "defense"    : 15
     },
     "10": {
-        "image"      : "https://i.imgur.com/iJnXsV5.png",
+        "image"      : "https://media.discordapp.net/attachments/706686059605393498/716352754070716436/Fuck_you_ricky.png?width=436&height=611",
         "name"       : "`★ Ken & Aaron`",
         "weight"     : "3 Galaxies",
         "rarity"     : "EX", 
@@ -167,5 +167,29 @@
         "Libido"     : "Yes.",
         "strength"   : "Yes.",
         "defense"    : "No."
+    },
+    "18" : {
+        "image"      : "https://cdn.discordapp.com/attachments/702914557189816370/716352072324218900/BigBlack.png",
+        "name"       : "The Big Black",
+        "weight"     : "?",
+        "rarity"     : "Legendary",
+        "desc"       : "Riddle me this, riddle me that, who's afraid of the Big Black...",
+        "difficulty" : "6.80",
+        "CS"         : 4,
+        "HP"         : 5,
+        "OD"         : 7,
+        "AR"         : 10,
+        "strength"   : 348,
+        "defense"    : "?"
+    },
+    "19": {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716388779576918076/bert.png",
+        "name"       : "`★ Acme of Albert`",
+        "weight"     : "150",
+        "rarity"     : "EX",
+        "desc"       : "What happens in Vegas, stays in Vegas",
+        "charisma"   : "Yes",
+        "strength"   : 1905,
+        "defense"    : 777
     }
 }
