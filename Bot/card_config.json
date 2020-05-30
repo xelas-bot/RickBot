@@ -1,6 +1,6 @@
 {
     "Common": {
-        "drop"    : 0.05,
+        "drop"    : 1,
         "currency": 100,
         "color"   : 6618980
     },

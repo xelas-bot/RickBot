@@ -56,10 +56,13 @@ async def on_ready():
     print('Bot is running')
 
 def check_rarity(card):
-    for x in card_rarity:
-        if card in card_rarity[x]:
-            return x
-    print("Update rarities dummy")
+    with open('data/card_rarity.json') as f:
+        card_rarity = json.load(f)
+        f.close()
+        for x in card_rarity:
+            if card in card_rarity[x]:
+                return x
+        print("Update rarities dummy")
     return "Error"
 
 # bot message
@@ -169,21 +172,31 @@ async def on_message(message):
 
     if command == "tradeup":
         if message.author.id in players:
+            print(args)
             if len(args) < 10:
                 await message.channel.send("Select 10 cards of the same quality to trade up! Use + [" + config["prefix"] + "tradeup id1 id2 ... id10]")
             else:
-                cards = players[message.author.id].cards
+                player_cards = players[message.author.id].cards
                 same_rarity = True
+                rarity = ''
+                
                 try:
-                    rarity = rarity = check_rarity(args[0])
+                    rarity = check_rarity(player_cards[int(args[0])])
+                    print(rarity)
                     for x in args[1:10]:
-                        if check_rarity(x) != rarity:
+                        if check_rarity(player_cards[int(x) - 1]) != rarity:
+                            print(player_cards[int(x) - 1])
+                            print(check_rarity(player_cards[int(x) - 1]))
                             same_rarity = False
-                except:
+                except Exception:
                     await message.channel.send("Select 10 cards of the same quality to trade up! Use + [" + config["prefix"] + "tradeup id1 id2 ... id10]")
                 
                 if same_rarity:
-                    
+                    desc = ''
+                    for x in args[:10]:
+                        desc += cards[player_cards[int(x) - 1]]["name"] + '\n'
+                    embed=discord.Embed(title="You are trading up 10 " + rarity + "s", description=desc)
+                    await message.channel.send(embed=embed)
                 else:
                     await message.channel.send("The cards must be of the same quality!")
         else:
@@ -216,7 +229,7 @@ async def on_message(message):
         if message.author.id in players:
             x = int(args[0]) - 1
             card_id = players[message.author.id].cards[x]
-            
+
             embed = discord.Embed(title=cards[card_id]["name"],description=cards[card_id]["desc"], color=card_config[cards[card_id]["rarity"]]["color"])
             if message.channel.guild.icon_url == None:
                 embed.set_author(name="Your Card:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")

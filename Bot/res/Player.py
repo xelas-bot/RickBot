@@ -61,7 +61,7 @@ class Player:
         self.cards = data["cards"]
     
     def spawn(self, rarity):
-        print(rarity)
+        print(self.name + " got a " + rarity)
         self.get_db()
         drops = card_rarity[rarity]
         drop = random.choice(drops)
