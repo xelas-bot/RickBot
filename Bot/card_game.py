@@ -818,7 +818,8 @@ async def on_message(message):
                             return m.author == user and (m.content == '!bet_confirm' or m.content == '!bet_cancel')
                     response = await bot.wait_for("message",timeout = 60.0, check=check_list)
                     if(response.content == "!bet_confirm"):
-                        # do something
+                        
+                        
                         pass
                     else:
                         await message.channel.send("Betting cancelled");
@@ -836,16 +837,16 @@ async def on_message(message):
             for x in crates["crates"]:
                 if x != "weights":
                     if x in player_crates:
-                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] +   "") x" + player_crates[x] + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " x" + player_crates[x] + '\n'
                     else:
                         desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " x0" + '\n'
             desc += '\n**Keys:**\n'
             for x in crates["keys"]:
                 if x != "weights":
                     if x in player_keys:
-                        desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " x" + player_keys[x] + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " ($" + str(crates["keys"][x]["price"]) + ") x" + player_keys[x] + '\n'
                     else:
-                        desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " x0" + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " ($" + str(crates["keys"][x]["price"]) + ") x0" + '\n'
 
             embed = discord.Embed(title="Your Crates and Keys:", description=desc, color=config["embed_color"])
             embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
@@ -855,14 +856,15 @@ async def on_message(message):
         if args[0] == 'buy':
             try:
                 if int(args[0]) >= 1 and int(args[0]) <= len(crates["keys"]) - 1:
-                    if player.has_currency(crates["keys"][args[0]["price"]):
-                        player.add_currency(-crates["keys"][args[0]["price"])
+                    if player.has_currency(crates["keys"][args[0]]["price"]):
+                        player.add_currency(-crates["keys"][args[0]]["price"])
                         player.give_key(args[0])
                     else:
                         await message.channel.send("You don't have enough money!")
                 else:
                     await message.channel.send("Please enter a valid id (1-" + str(len(crates["keys"]) - 1) + ")")
-            pass
+            except Exception:
+                pass
         
 
 
