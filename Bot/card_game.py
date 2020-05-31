@@ -818,14 +818,14 @@ async def on_message(message):
         player_crates = player.get_crates()
         player_keys = player.get_keys()
 
-        desc = '*Crates:*\n'
+        desc = '**Crates:**\n'
         for x in crates["crates"]:
             if x != "weights":
                 if x in player_crates:
                     desc += crates["crates"][x]["name"] + " x" + player_crates[x] + '\n'
                 else:
                     desc += crates["crates"][x]["name"] + " x0" + '\n'
-        desc += '*Keys:*\n'
+        desc += '**Keys:**\n'
         for x in crates["keys"]:
             if x != "weights":
                 if x in player_keys:
