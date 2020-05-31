@@ -11,6 +11,13 @@ import pymongo
 from pymongo import MongoClient
 from res.Player import Player
 
+from datetime import datetime
+import time
+
+
+
+
+
 
 # Mongo auth
 with open("auth.json") as f:
@@ -49,6 +56,12 @@ with open('config.json') as f:
     config = json.load(f)
     f.close()
 
+# config options
+with open('data/market_bot.json') as f:
+    global market_bot
+    market_bot = json.load(f)
+    f.close()
+
 def update_players():
     players = {}
     for x in db_players.find():
@@ -66,6 +79,33 @@ def update_market():
 def create_listing(user_id, card_price, card_id):
     listing = {"user_id": user_id, "card_price": card_price, "card_id": card_id}
     db_market.insert_one(listing)
+
+def remove_listing(listing_id, verify):
+    market = update_market()
+    query = market[int(listing_id) - 1]
+    if query == verify:
+        db_market.delete_one(query)
+        return True
+    else:
+        return False
+
+## Market Refresh
+
+def refresh_time():
+    t = time.localtime()
+    current_time = time.strftime("H:M:S", t)
+    print(current_time)
+
+    return True
+
+def refresh_market():
+    choice = random.choice(market_bot)
+    price = random.randrange(choice["price_lower"], choice["price_upper"])
+    create_listing(user_id=-1, card_price=price, card_id=choice["card_id"])
+    
+if refresh_time():
+    refresh_market()
+    
 
 async def show_card(message, card_id, title, show_desc=True, footer=None, mention=False):
     embed = discord.Embed(title=cards[card_id]["name"],description="*" + cards[card_id]["desc"] + "*", color=card_config[cards[card_id]["rarity"]]["color"])
@@ -162,6 +202,8 @@ async def on_message(message):
         return
     
     command = args[0][1:]
+    # print(command)
+    # print(args)
     del args[0]
 
     if command == "create":
@@ -324,12 +366,61 @@ async def on_message(message):
             await message.channel.send(embed=embed)
         else:
             await message.channel.send(config["join_msg"].replace("%", config["prefix"]))
-
     
-            
     if command == "list":
         if message.author.id in players:
             if len(args) >= 1:
+                if args[0].lower() in ["common", "uncommon", "rare", "epic", "legendary", "ex", "commons", "uncommons", "rares", "epics", "legendaries", "exs"]:
+                    page = 0
+                    page_len = config["page_len"]
+                    rarity = "Common"
+                    if args[0].lower() in ["commons", "uncommons", "rares", "epics"]:
+                        rarity = args[0][0].upper() + args[0][1:-1].lower()
+                    elif args[0].lower() == "legendaries":
+                        rarity = "Legendary"
+                    elif args[0].lower() == "exs":
+                        rarity = "EX"
+                    elif args[0].lower() == "ex":
+                        rarity = "EX"
+                    else:
+                        rarity = args[0][0].upper() + args[0][1:].lower()
+                    while True:
+                        players = update_players()
+                        card_collection = players[message.author.id].get_rarities(rarity)
+                        total = len(card_collection)
+                        total_cards = players[message.author.id].get_card_len()
+                        desc = ''
+                        embed = None
+                        if total == 0:
+                            desc = 'You have no cards! Go out and get some!'
+                        else:
+                            for i, x in card_collection[page * page_len: page * page_len + page_len]:
+                                desc += '**' + cards[str(x)]["name"] + '**\t|\t' + cards[str(x)]["rarity"] + "\t|\t" + str(i + 1 + page * page_len) + '/' + str(total_cards) + '\n'
+                        if rarity == "Legendary":
+                            embed=discord.Embed(title="Your Cards (Legendaries)", description=desc)
+                        else:
+                            embed=discord.Embed(title="Your Cards (" + rarity + "s)", description=desc)
+                        if total > 0:
+                            embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
+                        embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
+                        await message.channel.send(embed=embed)
+                        user = message.author
+                        def check_list(message):
+                            return message.author == user and (message.content == "!back" or message.content == "!next")
+                        try:
+                            response = await bot.wait_for("message",timeout = 60.0, check=check_list)
+                            if response.content == "!back":
+                                if page <= 0:
+                                    return
+                                else:
+                                    page -= 1
+                            if response.content == "!next":
+                                if page * page_len + page_len > total - 1:
+                                    return
+                                else:
+                                    page += 1
+                        except Exception:
+                            return
                 try:
                     other = bot.get_user(int(args[0][3:-1]))
                     page = 0
@@ -339,10 +430,14 @@ async def on_message(message):
                         card_collection = players[other.id].cards
                         total = len(card_collection)
                         desc = ''
-                        for i, x in enumerate(card_collection[page * page_len: page * page_len + page_len]):
-                            desc += '**' + cards[str(x)]["name"] + '**\t|\t' + cards[str(x)]["rarity"] + "\t|\t" + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
+                        if total == 0:
+                            desc = 'You have no cards! Go out and get some!'
+                        else:
+                            for i, x in enumerate(card_collection[page * page_len: page * page_len + page_len]):
+                                desc += '**' + cards[str(x)]["name"] + '**\t|\t' + cards[str(x)]["rarity"] + "\t|\t" + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
                         embed=discord.Embed(title=other.name + "'s Cards", description=desc)
-                        embed.set_footer(text="You are on page " + str(page + 1) + "/" + str(total // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
+                        if total > 0:
+                            embed.set_footer(text="You are on page " + str(page + 1) + "/" + str(total // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
                         embed.set_author(name=other.name, icon_url=other.avatar_url)
                         await message.channel.send(embed=embed)
                         user = message.author
@@ -458,7 +553,7 @@ async def on_message(message):
 
     if command == 'drop':
         if message.author.id in config["administrators"]:
-            drop = 0
+            drop = 1
             if len(args) == 1:
                 try:
                     players[message.author.id].give(args[0])
@@ -478,9 +573,16 @@ async def on_message(message):
                 elif(roll == 5):
                     drop = players[message.author.id].spawn("Legendary")
                 else:
-                    drop = players[message.author.id].spawn("Ex")
+                    drop = players[message.author.id].spawn("EX")
             
             await show_card(message, drop, message.author.name + " caught a:", False, None, True)
+
+    if command == "cash_monies":
+        if message.author.id in config["administrators"]:
+            try:
+                players[message.author.id].set_currency(int(args[0]))
+            except Exception:
+                await message.channel.send("Hello administrator. I don't want to expose your low iq, but the command is [" + config["prefix"] + "cash_monies money] to set your money.")
 
     if command == "sell":
         if message.author.id in players:
@@ -530,16 +632,21 @@ async def on_message(message):
                     market = update_market()
                     total = len(market)
                     desc = ''
-                    for i, x in enumerate(market[page * page_len: page * page_len + page_len]):
-                        seller_name = 'market'
-                        try:
-                            seller_name = bot.get_user(int(x["user_id"])).name
-                        except Exception:
-                            print("Is this listing from market?")
-                            pass
-                        desc += '**' + cards[x["card_id"]]["name"] + '** | ' + cards[x["card_id"]]["rarity"] + " | Seller: " + seller_name + " | id: "  + str(i + 1 + page * page_len) + " | Price: " + str(x["card_price"]) + " " + '\n'
+                    if total == 0:
+                        desc = 'There are no listings on the market'
+                    else:
+                        for i, x in enumerate(market[page * page_len: page * page_len + page_len]):
+                            seller_name = 'market'
+                            try:
+                                if x["user_id"] != -1:
+                                    seller_name = bot.get_user(int(x["user_id"])).name
+                            except Exception:
+                                print("Someone has an invalid id")
+                                pass
+                            desc += '**' + cards[x["card_id"]]["name"] + '** | ' + cards[x["card_id"]]["rarity"] + " | Seller: " + seller_name + " | id: "  + str(i + 1 + page * page_len) + " | Price: " + str(x["card_price"]) + " " + '\n'
                     embed=discord.Embed(description=desc)
-                    embed.set_footer(text="You are on page " + str(page + 1) + "/" + str(total // page_len + 1) + ". Use *!market back* and *!market next* to scroll through the list!")
+                    if total > 0:
+                        embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use *!market back* and *!market next* to scroll through the list!")
                     embed.set_author(name="Current Market Listings", icon_url="https://melmagazine.com/wp-content/uploads/2019/07/Screen-Shot-2019-07-31-at-5.47.12-PM.png")
                     await message.channel.send(embed=embed)
                     user = message.author
@@ -552,29 +659,54 @@ async def on_message(message):
                                 return
                             else:
                                 page -= 1
-                        if response.content == "!market next":
-                            if page * page_len + page_len > total:
+                        elif response.content == "!market next":
+                            if page * page_len + page_len > total - 1:
                                 return
                             else:
                                 page += 1
+                        else:
+                            return
                     except Exception:
                         return
-            '''
+            
             elif args[0] == "buy":
-                selectedcard = args[1]
-                cardList = update_market
-                cost = cardList[selectedcard - 1]["card_price"]
-                
-                if players[message.author.id].hasmoney(cardlist[selectedcard-1]):
-                    del cardlist[selectedcard - 1]:
-                    players[message.author.id][cards].appened(cardlist[selectedcard - 1])
-                    players[message.author.id]["currency"] = int( players[message.author.id]["currency"]) - int(cost)
-                
-                
-
-
-                    
-                '''
+                try:
+                    card_list = update_market()
+                    if int(args[1]) >= 1:
+                        selected_card = card_list[int(args[1]) - 1]
+                        cost = selected_card["card_price"]
+                        print(cost)
+                        print(selected_card)
+                        if message.author.id == selected_card["user_id"] or players[message.author.id].has_currency(currency=cost):
+                            ##remove listing
+                            if remove_listing(args[1], selected_card):
+                                players[message.author.id].add_currency(-int(cost))
+                                players[message.author.id].give(selected_card["card_id"])
+                                if message.author.id == selected_card["user_id"]:
+                                    await message.channel.send("You have removed your " + cards[selected_card["card_id"]]["name"] + " from the market")
+                                else:
+                                    await message.channel.send("You have purchased a " + cards[selected_card["card_id"]]["name"])
+                                if selected_card["user_id"] != -1:
+                                    players[selected_card["user_id"]].add_currency(int(cost))
+                            else:
+                                await message.channel.send("Item has already been purchased")
+                        else:
+                            await message.channel.send("Hey you! You have NO monies!")
+                except Exception:
+                    await message.channel.send("That's not a valid id!")
+            
+            elif args[0] == "sell":
+                try:
+                    card_list = update_market()
+                    price = int(args[2])
+                    card_id = players[message.author.id].cards[int(args[1]) - 1]
+                    if players[message.author.id].remove(args[1]):
+                        create_listing(message.author.id, price, card_id)
+                        await message.channel.send("Made a listing for a " + cards[card_id]["rarity"] + " " + cards[card_id]["name"] + " for $" + str(price))
+                    else:
+                        await message.channel.send("Card is not in your collection")
+                except Exception:
+                    await message.channel.send("That's not a valid id or money!")
         else:
             await message.channel.send(config["join_msg"].replace("%", config["prefix"]))
 

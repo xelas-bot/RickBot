@@ -50,6 +50,10 @@ class Player:
         self.currency += currency
         self.set_db()
     
+    def set_currency(self, currency):
+        self.get_db()
+        self.currency = currency
+        self.set_db()
 
     def set_db(self):
         myquery = {"_id": self.id}
@@ -73,6 +77,15 @@ class Player:
         self.get_db()
         self.cards = [x for i, x in enumerate(self.cards) if not str(i + 1) in cards]
         self.set_db()
+    
+    def remove(self, card):
+        self.get_db()
+        if int(card) >= 1 and int(card) <= len(self.cards):
+            del self.cards[int(card) - 1]
+            self.set_db()
+            return True
+        else:
+            return False
     
     def spawn(self, rarity, exclude = []):
         self.get_db()
@@ -101,3 +114,9 @@ class Player:
     def has_currency(self, currency):
         self.get_db()
         return self.currency >= currency
+    
+    def get_card_len(self):
+        return len(self.cards)
+    
+    def get_rarities(self, rarity):
+        return [(i, x) for i, x in enumerate(self.cards) if card_data[x]["rarity"] == rarity]

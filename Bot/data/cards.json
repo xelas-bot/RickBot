@@ -191,5 +191,26 @@
         "charisma"   : "Yes",
         "strength"   : 1905,
         "defense"    : 777
+    },
+    "20": {
+        "image"      : "https://i.imgur.com/BgZHjT1.jpg",
+        "name"       : "Don Ricks",
+        "weight"     : "170",
+        "rarity"     : "Common",
+        "desc"       : "Rule the mafia, lifes easy, reach heights like my water: Mount Fiji",
+        "charisma"   : "999",
+        "Sweatiness" : "999",
+        "strength"   : 3,
+        "defense"    : 1
+    },
+    "21" : {
+        "image"      : "https://i.imgur.com/BgZHjT1.jpg",
+        "name"       : "Ze Nest",
+        "weight"     : "77",
+        "rarity"     : "Common",
+        "desc"       : "Names Ze Ernest. Never friendly.",
+        "Sweatiness" : "41142",
+        "strength"   : 3,
+        "defense"    : 2
     }
 }
