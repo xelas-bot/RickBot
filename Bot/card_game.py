@@ -812,12 +812,16 @@ async def on_message(message):
             await message.channel.send("Not enough arguments. Usage: `bet <amount> <chance>`.")
         else:
             if(isFloat(args[0]) and isFloat(args[1])):
-                await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet." % args[0], args[1], config["prefix"])
+                await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet." % args[0], args[1], config["prefix"], config["prefix"])
                 try:
                     def check_list(m):
-                            return m.author == user
+                            return m.author == user and (m.content == '!bet_confirm' or m.content == '!bet_cancel')
                     response = await bot.wait_for("message",timeout = 60.0, check=check_list)
-                    if(response == "" )
+                    if(response.content == "!bet_confirm"):
+                        # do something
+                        pass
+                    else:
+                        await message.channel.send("Betting cancelled");
                 except Exception:
                     await message.channel.send("Betting cancelled.")
                     pass
@@ -832,7 +836,7 @@ async def on_message(message):
             for x in crates["crates"]:
                 if x != "weights":
                     if x in player_crates:
-                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " x" + player_crates[x] + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] +   "") x" + player_crates[x] + '\n'
                     else:
                         desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " x0" + '\n'
             desc += '\n**Keys:**\n'
@@ -851,9 +855,13 @@ async def on_message(message):
         if args[0] == 'buy':
             try:
                 if int(args[0]) >= 1 and int(args[0]) <= len(crates["keys"]) - 1:
-                    
+                    if player.has_currency(crates["keys"][args[0]["price"]):
+                        player.add_currency(-crates["keys"][args[0]["price"])
+                        player.give_key(args[0])
+                    else:
+                        await message.channel.send("You don't have enough money!")
                 else:
-                    await message.channel.send("Wha")
+                    await message.channel.send("Please enter a valid id (1-" + str(len(crates["keys"]) - 1) + ")")
             pass
         
 

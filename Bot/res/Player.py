@@ -151,6 +151,11 @@ class Player:
             print("Not a card id")
         self.set_db()
     
+    def give_key(self, key):
+        self.get_db()
+        self.keys.append(key)
+        self.set_db()
+    
     def has_currency(self, currency):
         self.get_db()
         return self.currency >= currency
