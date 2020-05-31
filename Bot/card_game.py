@@ -813,20 +813,23 @@ async def on_message(message):
         else:
             if(isFloat(args[0]) and isFloat(args[1])):
                 if(float(args[1]) > 1 or float(args[1]) < 0):
-                await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet." % args[0], args[1], config["prefix"], config["prefix"])
-                try:
-                    def check_list(m):
-                            return m.author == user and (m.content == '!bet_confirm' or m.content == '!bet_cancel')
-                    response = await bot.wait_for("message",timeout = 60.0, check=check_list)
-                    if(response.content == "!bet_confirm"):
-                    
-                        
-                        pass
-                    else:
-                        await message.channel.send("Betting cancelled");
-                except Exception:
-                    await message.channel.send("Betting cancelled.")
+                    message.channel.send("Proportion must be ")
                     pass
+                else:
+                    await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet." % args[0], args[1], config["prefix"], config["prefix"])
+                    try:
+                        def check_list(m):
+                                return m.author == user and (m.content == '!bet_confirm' or m.content == '!bet_cancel')
+                        response = await bot.wait_for("message",timeout = 60.0, check=check_list)
+                        if(response.content == "!bet_confirm"):
+                        
+                            
+                            pass
+                        else:
+                            await message.channel.send("Betting cancelled");
+                    except Exception:
+                        await message.channel.send("Betting cancelled.")
+                        pass
 
     if command == "crates":
         player = players[message.author.id]
@@ -860,6 +863,9 @@ async def on_message(message):
                     if player.has_currency(crates["keys"][args[0]]["price"]):
                         player.add_currency(-crates["keys"][args[0]]["price"])
                         player.give_key(args[0])
+                        embed = discord.Embed(title="Your Crates and Keys:", description=desc, color=config["embed_color"])
+                        embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
+                        await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
                     else:
                         await message.channel.send("You don't have enough money!")
                 else:
