@@ -10,6 +10,7 @@ import json
 import pymongo
 from pymongo import MongoClient
 from res.Player import Player
+import schedule
 
 from datetime import datetime
 import time
@@ -56,12 +57,6 @@ with open('config.json') as f:
     config = json.load(f)
     f.close()
 
-# config options
-with open('data/market_bot.json') as f:
-    global market_bot
-    market_bot = json.load(f)
-    f.close()
-
 def update_players():
     players = {}
     for x in db_players.find():
@@ -88,23 +83,6 @@ def remove_listing(listing_id, verify):
         return True
     else:
         return False
-
-## Market Refresh
-
-def refresh_time():
-    t = time.localtime()
-    current_time = time.strftime("H:M:S", t)
-    print(current_time)
-
-    return True
-
-def refresh_market():
-    choice = random.choice(market_bot)
-    price = random.randrange(choice["price_lower"], choice["price_upper"])
-    create_listing(user_id=-1, card_price=price, card_id=choice["card_id"])
-    
-if refresh_time():
-    refresh_market()
     
 
 async def show_card(message, card_id, title, show_desc=True, footer=None, mention=False):
@@ -253,10 +231,10 @@ async def on_message(message):
                 try:
                     rarity = check_rarity(player_cards[int(args[0]) - 1])
                     card_types = []
-                    for x in args[1:10]:
+                    for x in args[:10]:
                         if check_rarity(player_cards[int(x) - 1]) != rarity:
                             same_rarity = False
-                            card_types.append(player_cards[int(args[0]) - 1])
+                            card_types.append(player_cards[int(x) - 1])
                 except Exception:
                     await message.channel.send("Select 10 cards of the same quality to trade up! Use + [" + config["prefix"] + "tradeup id1 id2 ... id10]")
                 
@@ -302,6 +280,9 @@ async def on_message(message):
         else:
             await message.channel.send(config["join_msg"].replace("%", config["prefix"]))
 
+    if command == "update_cards":
+
+
     if command == "reroll":
         if message.author.id in players:
             if len(args) < 3:
@@ -313,10 +294,10 @@ async def on_message(message):
                 card_types = []
                 try:
                     rarity = check_rarity(player_cards[int(args[0]) - 1])
-                    for x in args[1:3]:
+                    for x in args[:3]:
                         if check_rarity(player_cards[int(x) - 1]) != rarity:
                             same_rarity = False
-                        card_types.append(player_cards[int(args[0]) - 1])
+                        card_types.append(player_cards[int(x) - 1])
                 except Exception:
                     await message.channel.send("Select 3 cards of the same quality to reroll! Use [" + config["prefix"] + "reroll id1 id2 id3]")
                 if same_rarity:
@@ -437,7 +418,7 @@ async def on_message(message):
                                 desc += '**' + cards[str(x)]["name"] + '**\t|\t' + cards[str(x)]["rarity"] + "\t|\t" + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
                         embed=discord.Embed(title=other.name + "'s Cards", description=desc)
                         if total > 0:
-                            embed.set_footer(text="You are on page " + str(page + 1) + "/" + str(total // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
+                            embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
                         embed.set_author(name=other.name, icon_url=other.avatar_url)
                         await message.channel.send(embed=embed)
                         user = message.author
@@ -451,7 +432,7 @@ async def on_message(message):
                                 else:
                                     page -= 1
                             if response.content == "!next":
-                                if page * page_len + page_len > total:
+                                if page * page_len + page_len > total - 1:
                                     return
                                 else:
                                     page += 1
@@ -466,10 +447,14 @@ async def on_message(message):
                         card_collection = players[message.author.id].cards
                         total = len(card_collection)
                         desc = ''
-                        for i, x in enumerate(card_collection[page * page_len: page * page_len + page_len]):
-                            desc += '**' + cards[str(x)]["name"] + '**\t|\t' + cards[str(x)]["rarity"] + "\t|\t" + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
+                        if total == 0:
+                            desc = 'You have no cards! Go out and get some!'
+                        else:
+                            for i, x in enumerate(card_collection[page * page_len: page * page_len + page_len]):
+                                desc += '**' + cards[str(x)]["name"] + '**\t|\t' + cards[str(x)]["rarity"] + "\t|\t" + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
                         embed=discord.Embed(title="Your Cards", description=desc)
-                        embed.set_footer(text="You are on page " + str(page + 1) + "/" + str(total // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
+                        if total > 0:
+                            embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
                         embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
                         await message.channel.send(embed=embed)
                         user = message.author
@@ -483,7 +468,7 @@ async def on_message(message):
                                 else:
                                     page -= 1
                             elif response.content == "!next":
-                                if page * page_len + page_len > total:
+                                if page * page_len + page_len > total - 1:
                                     return
                                 else:
                                     page += 1
@@ -500,10 +485,14 @@ async def on_message(message):
                     card_collection = players[message.author.id].cards
                     total = len(card_collection)
                     desc = ''
-                    for i, x in enumerate(card_collection[page * page_len: page * page_len + page_len]):
-                        desc += '**' + cards[str(x)]["name"] + '** | ' + cards[str(x)]["rarity"] + " | " + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
+                    if total == 0:
+                        desc = 'You have no cards! Go out and get some!'
+                    else:
+                        for i, x in enumerate(card_collection[page * page_len: page * page_len + page_len]):
+                            desc += '**' + cards[str(x)]["name"] + '** | ' + cards[str(x)]["rarity"] + " | " + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
                     embed=discord.Embed(title="Your Cards", description=desc)
-                    embed.set_footer(text="You are on page " + str(page + 1) + "/" + str(total // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
+                    if total > 0:
+                        embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
                     embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
                     await message.channel.send(embed=embed)
                     user = message.author
@@ -517,7 +506,7 @@ async def on_message(message):
                             else:
                                 page -= 1
                         elif response.content == "!next":
-                            if page * page_len + page_len > total:
+                            if page * page_len + page_len > total - 1:
                                 return
                             else:
                                 page += 1

@@ -1,3 +1,23 @@
 [
-    {"card_id": "18", "price_lower": 0, "price_upper": 10000}
+    {"card_id": "1" , "price_lower": 80, "price_upper": 120, "weight": 1000},
+    {"card_id": "2" , "price_lower": 1000, "price_upper": 1500, "weight": 50},
+    {"card_id": "3" , "price_lower": 2500, "price_upper": 5000, "weight": 10},
+    {"card_id": "4" , "price_lower": 220, "price_upper": 270, "weight": 300},
+    {"card_id": "5" , "price_lower": 900, "price_upper": 1300, "weight": 1},
+    {"card_id": "6" , "price_lower": 0, "price_upper": 100, "weight": 10},
+    {"card_id": "7" , "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "8" , "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "9" , "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "10", "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "11", "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "12", "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "13", "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "14", "price_lower": 6000, "price_upper": 7000, "weight": 10},
+    {"card_id": "15", "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "16", "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "17", "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "18", "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "19", "price_lower": 0, "price_upper": 100, "weight": 15},
+    {"card_id": "20", "price_lower": 0, "price_upper": 100, "weight": 1},
+    {"card_id": "21", "price_lower": 0, "price_upper": 100, "weight": 1}
 ]
