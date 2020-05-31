@@ -278,7 +278,7 @@ async def on_message(message):
     if command == "tradeup":
         if message.author.id in players:
             if len(args) < 10:
-                await message.channel.send("Select 10 cards of the same quality to trade up! Use + [" + config["prefix"] + "tradeup id1 id2 ... id10]")
+                await message.channel.send("Select 10 cards of the same quality to trade up! Use + `" + config["prefix"] + "tradeup <id1> <id2> ... <id10>`")
             else:
                 player_cards = players[message.author.id].cards
                 same_rarity = True
@@ -292,7 +292,7 @@ async def on_message(message):
                             same_rarity = False
                             card_types.append(player_cards[int(x) - 1])
                 except Exception:
-                    await message.channel.send("Select 10 cards of the same quality to trade up! Use + [" + config["prefix"] + "tradeup id1 id2 ... id10]")
+                    await message.channel.send("Select 10 cards of the same quality to trade up! Use + `" + config["prefix"] + "tradeup <id1> <id2> ... <id10>`")
                 
                 if same_rarity:
                     if rarity == "EX":
@@ -302,7 +302,7 @@ async def on_message(message):
                         for x in args[:10]:
                             desc += cards[player_cards[int(x) - 1]]["name"] + '\n'
                         embed=discord.Embed(title="You are trading up 10 " + rarity + "s", description=desc)
-                        embed.set_footer(text="Type *" + config["prefix"] + "tradeup_confirm* to tradeup!")
+                        embed.set_footer(text="Type `" + config["prefix"] + "tradeup_confirm` to tradeup!")
                         await message.channel.send(embed=embed)
                         user = message.author
                         def check_tradeup(message):
@@ -339,7 +339,7 @@ async def on_message(message):
     if command == "reroll":
         if message.author.id in players:
             if len(args) < 3:
-                await message.channel.send("Select 3 cards of the same quality to reroll! Use [" + config["prefix"] + "reroll id1 id2 id3]")
+                await message.channel.send("Select 3 cards of the same quality to reroll! Use `" + config["prefix"] + "reroll <id1> <id2> <id3>`")
             else:
                 player_cards = players[message.author.id].cards
                 same_rarity = True
@@ -352,13 +352,13 @@ async def on_message(message):
                             same_rarity = False
                         card_types.append(player_cards[int(x) - 1])
                 except Exception:
-                    await message.channel.send("Select 3 cards of the same quality to reroll! Use [" + config["prefix"] + "reroll id1 id2 id3]")
+                    await message.channel.send("Select 3 cards of the same quality to reroll! Use `" + config["prefix"] + "reroll <id1> <id2> <id3>`")
                 if same_rarity:
                     desc = ''
                     for x in args[:3]:
                         desc += cards[player_cards[int(x) - 1]]["name"] + '\n'
                     embed=discord.Embed(title="You are rerolling 3 " + rarity + "s", description=desc)
-                    embed.set_footer(text="Type *" + config["prefix"] + "reroll_confirm* to tradeup!")
+                    embed.set_footer(text="Type `" + config["prefix"] + "reroll_confirm` to tradeup!")
                     await message.channel.send(embed=embed)
                     user = message.author
                     def check_reroll(message):
@@ -435,7 +435,7 @@ async def on_message(message):
                         else:
                             embed=discord.Embed(title="Your Cards (" + rarity + "s)", description=desc)
                         if total > 0:
-                            embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
+                            embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use `!back` and `!next` to scroll through the list!")
                         embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
                         await message.channel.send(embed=embed)
                         user = message.author
@@ -471,7 +471,7 @@ async def on_message(message):
                                 desc += '**' + cards[str(x)]["name"] + '**\t|\t' + cards[str(x)]["rarity"] + "\t|\t" + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
                         embed=discord.Embed(title=other.name + "'s Cards", description=desc)
                         if total > 0:
-                            embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
+                            embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use `!back` and `!next` to scroll through the list!")
                         embed.set_author(name=other.name, icon_url=other.avatar_url)
                         await message.channel.send(embed=embed)
                         user = message.author
@@ -507,7 +507,7 @@ async def on_message(message):
                                 desc += '**' + cards[str(x)]["name"] + '**\t|\t' + cards[str(x)]["rarity"] + "\t|\t" + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
                         embed=discord.Embed(title="Your Cards", description=desc)
                         if total > 0:
-                            embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
+                            embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use `!back` and `!next` to scroll through the list!")
                         embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
                         await message.channel.send(embed=embed)
                         user = message.author
@@ -545,7 +545,7 @@ async def on_message(message):
                             desc += '**' + cards[str(x)]["name"] + '** | ' + cards[str(x)]["rarity"] + " | " + str(i + 1 + page * page_len) + '/' + str(total) + '\n'
                     embed=discord.Embed(title="Your Cards", description=desc)
                     if total > 0:
-                        embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use *!back* and *!next* to scroll through the list!")
+                        embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use `!back` and `!next` to scroll through the list!")
                     embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
                     await message.channel.send(embed=embed)
                     user = message.author
@@ -586,7 +586,7 @@ async def on_message(message):
     
     if command == 'inspect':
         if len(args) == 0:
-            await message.channel.send("Use [" + config["prefix"] + "inspect id] to view a card!")
+            await message.channel.send("Use `" + config["prefix"] + "inspect <id>` to view a card!")
         else:
             try:
                 await show_card(message, args[0], 'View Card:', True, None, True)
@@ -688,7 +688,7 @@ async def on_message(message):
                             desc += '**' + cards[x["card_id"]]["name"] + '** | ' + cards[x["card_id"]]["rarity"] + " | Seller: " + seller_name + " | id: "  + str(i + 1 + page * page_len) + " | Price: " + str(x["card_price"]) + " " + '\n'
                     embed=discord.Embed(description=desc)
                     if total > 0:
-                        embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use *!market back* and *!market next* to scroll through the list!")
+                        embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use `!market back` and `!market next` to scroll through the list!")
                     embed.set_author(name="Current Market Listings", icon_url="https://melmagazine.com/wp-content/uploads/2019/07/Screen-Shot-2019-07-31-at-5.47.12-PM.png")
                     await message.channel.send(embed=embed)
                     user = message.author
@@ -813,28 +813,31 @@ async def on_message(message):
         else:
             if(isFloat(args[0]) and isFloat(args[1])):
                 if(float(args[1]) > 1 or float(args[1]) < 0):
-                    message.channel.send("Proportion must be greater than 0 and less than 1.")
-                elif(float(args[0]) < 0 or float(args[0] > players[user].currency)):
-                    message.channel.send("You don't have enough money to make this bet. You only have %s money." % players[user].currency)
+                    await message.channel.send("Proportion must be greater than 0 and less than 1.")
+                elif(float(args[0]) < 0 or float(args[0]) > players[user.id].currency):
+                    await message.channel.send("You don't have enough money to make this bet. You only have %s money." % players[user.id].currency)
                 else:
-                    await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet." % (args[0], args[1], config["prefix"], config["prefix"]))
+                    win_amount = 1 / float(args[1]) * args[0] * 0.9
+                    await message.channel.send("Betting `%s` with chance `%s`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet. Potential win: `%s`" % (args[0], args[1], config["prefix"], config["prefix"], str(win_amount)))
                     try:
                         def check_list(m):
                                 return m.author == user and (m.content == '!bet_confirm' or m.content == '!bet_cancel')
                         response = await bot.wait_for("message",timeout = 60.0, check=check_list)
                         if(response.content == "!bet_confirm"):
                             result = random.random()
-                            if(result > float(args[1])):
-                                win = players[user].add_currency(args[0] * (1-float(args[1])) * 0.9)
+                            print('Chance: ' + args[1] + '\tResult: ' + str(result))
+                            if(result <= float(args[1])):
+                                win = players[user.id].add_currency(win_amount)
                                 embed = discord.Embed(title="You WIN!", description="You won " + str(win) + "!", color=0x00ff00)
                                 await message.channel.send(embed=embed)
                             else:
-                                lose
+                                embed = discord.Embed(title="You LOSE.", description="You lost " + str(args[0]) + "!", color=0xff0000)
+                                players[user.id].add_currency(-1 * float(args[0]))
+                                await message.channel.send(embed=embed)
                         else:
-                            await message.channel.send("Betting cancelled");
+                            await message.channel.send("Betting cancelled.")
                     except Exception:
-                        await message.channel.send("Betting cancelled.")
-                        pass
+                        await message.channel.send("There was an error with the bet.")
 
     if command == "crates":
         player = players[message.author.id]
@@ -846,16 +849,16 @@ async def on_message(message):
             for x in crates["crates"]:
                 if x != "weights":
                     if x in player_crates:
-                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " (" + crates["crates"][x][] ) x" + str(player_crates[x]) + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " (" + crates["crates"][x]["key"] + ") x" + str(player_crates[x]) + '\n'
                     else:
-                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " x0" + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " (" + crates["crates"][x]["key"] + ") x0\n"
             desc += '\n**Keys:**\n'
             for x in crates["keys"]:
                 if x != "weights":
                     if x in player_keys:
                         desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " ($" + str(crates["keys"][x]["price"]) + ") x" + str(player_keys[x]) + '\n'
                     else:
-                        desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " ($" + str(crates["keys"][x]["price"]) + ") x0" + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " ($" + str(crates["keys"][x]["price"]) + ") x0\n"
 
             embed = discord.Embed(title="Your Crates and Keys:", description=desc, color=config["embed_color"])
             embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)

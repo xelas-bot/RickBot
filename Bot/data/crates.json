@@ -3,12 +3,12 @@
     "keys": {
         "weights": [0.8, 0.18, 0.02],
         "1": {
-            "name"    : "Alpha Key",
-            "price"   : 2000
-        },
-        "2": {
             "name"    : "Beta Key",
             "price"   : 500
+        },
+        "2": {
+            "name"    : "Alpha Key",
+            "price"   : 2000
         },
         "3": {
             "name"    : "Special Key",
