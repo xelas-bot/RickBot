@@ -7,7 +7,7 @@ import random
 from datetime import datetime, timedelta
 
 # auth
-with open("../auth.json") as f:
+with open("~/RickBot/Bot/auth.json") as f:
     auth = json.load(f)
     global cluster
     cluster = MongoClient(auth["mongo_key"])
