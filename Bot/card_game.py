@@ -29,7 +29,7 @@ with open("./Bot/auth.json") as f:
 
 
 # Mongo Database
-db = cluster["heroku_fl3jf8nf"]
+db = cluster["game"]
 db_players = db["players"]
 db_market = db["market"]
 
