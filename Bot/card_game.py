@@ -815,9 +815,9 @@ async def on_message(message):
                 await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet." % args[0], args[1], config["prefix"])
                 try:
                     def check_list(m):
-                            return m.author == user and (m.content == "!back" or message.content == "!next")
+                            return m.author == user
                     response = await bot.wait_for("message",timeout = 60.0, check=check_list)
-                    if(response.)
+                    if(response == "" )
                 except Exception:
                     await message.channel.send("Betting cancelled.")
                     pass
@@ -850,7 +850,10 @@ async def on_message(message):
         
         if args[0] == 'buy':
             try:
-                if int(args[0]) >= 1 and int(args[0]) <= len(crates[keys])
+                if int(args[0]) >= 1 and int(args[0]) <= len(crates["keys"]) - 1:
+                    
+                else:
+                    await message.channel.send("Wha")
             pass
         
 
