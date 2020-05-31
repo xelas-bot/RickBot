@@ -25,7 +25,7 @@ with open("auth.json") as f:
     f.close()
 
 # Mongo Database
-db = cluster["heroku_fl3jf8nf"]
+db = cluster["game"]
 db_players = db["players"]
 db_market = db["market"]
 
