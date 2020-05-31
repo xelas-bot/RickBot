@@ -1,6 +1,6 @@
 {
     "1": {
-        "image"      : "https://i.imgur.com/pZdBz5O.png",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716361970751635537/Kenneth.jpg",
         "name"       : "ZeKenneth",
         "weight"     : 100,
         "rarity"     : "Common",
@@ -9,7 +9,7 @@
         "defense"    : 1
     },
     "2": {
-        "image"      : "https://media.discordapp.net/attachments/706686059605393498/716394962236735579/aarya_atluri.png?width=436&height=611",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716394962236735579/aarya_atluri.png",
         "name"       : "*Predator* Aarya Atluri",
         "weight"     : 15000,
         "rarity"     : "Epic",
@@ -27,7 +27,7 @@
         "defense"    : 420
     },
     "4": {
-        "image"      : "https://i.imgur.com/RgY59X0.jpg",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716361907434684476/AnchorShrey.png",
         "name"       : "Anchor Shrey",
         "weight"     : 99999,
         "rarity"     : "Uncommon",
@@ -45,16 +45,16 @@
         "defense"    : 99
     },
     "6": {
-        "image"      : "https://i.imgur.com/C9WckQd.png",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716527501265993778/MechanizedShrey.png",
         "name"       : "Mechanized Shrey",
         "weight"     : "NaN",
-        "rarity"     : "Legendary",
+        "rarity"     : "Epic",
         "desc"       : "Just your average Walmart patron",
         "strength"   : 21,
         "defense"    : 999
     },
     "7": {
-        "image"      : "https://i.imgur.com/z2puaZT.png",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716353114990575616/Maldboss.png",
         "name"       : "Jun 'MaldBoss' Chen",
         "weight"     : 99999,
         "rarity"     : "Uncommon",
@@ -64,7 +64,7 @@
         "defense"    : 0
     },
     "8": {
-        "image"      : "https://i.imgur.com/SZO0n8X.png",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716362310385533008/SZO0n8Xh.jpg",
         "name"       : "Shinobi Erin",
         "weight"     : "off the charts",
         "rarity"     : "Rare",
@@ -73,7 +73,7 @@
         "defense"    : 150
     },
     "9": {
-        "image"      : "https://media.discordapp.net/attachments/706686059605393498/716402630326485032/whale_chang.png?width=436&height=611",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716402630326485032/whale_chang.png",
         "name"       : "Aaron 'Whale' Chang",
         "weight"     : "7120302.87",
         "rarity"     : "Common",
@@ -83,7 +83,7 @@
         "defense"    : 15
     },
     "10": {
-        "image"      : "https://media.discordapp.net/attachments/706686059605393498/716352754070716436/Fuck_you_ricky.png?width=436&height=611",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716352754070716436/Fuck_you_ricky.png",
         "name"       : "`★ Ken & Aaron`",
         "weight"     : "3 Galaxies",
         "rarity"     : "EX", 
@@ -102,7 +102,7 @@
         "defense"    : 2470
     },
     "12": {
-        "image"      : "https://i.imgur.com/ll3kupf.png",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716353107121930290/aryaf.png",
         "name"       : "Arya '*Astralis*' Faggerwall",
         "weight"     : "No.",
         "rarity"     : "Common",
@@ -112,7 +112,7 @@
         "defense"    : 10
     },
     "13": {
-        "image"      : "https://i.imgur.com/JJ1ZFFE.jpg",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716361938728124436/Evolution_of_Man.png",
         "name"       : "`★ Evolution of Man`",
         "weight"     : "909084",
         "rarity"     : "EX",
@@ -137,7 +137,7 @@
         "defense"    : "950"
     },
     "15": {
-        "image"      : "https://media.discordapp.net/attachments/706686059605393498/716362971021836390/Thick_rick-Recovered.png?width=436&height=611",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716362971021836390/Thick_rick-Recovered.png",
         "name"       : "Thiccy Titus",
         "weight"     : "69",
         "rarity"     : "Rare",
@@ -147,13 +147,13 @@
         "defense"    : "69"
     },
     "16": {
-        "image"      : "https://i.imgur.com/HY1ylyZ.png",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716353110099886130/KennethTemplate.png",
         "name"       : "'Ahh-Chewie' - Shrimpeon",
         "weight"     : "7",
         "rarity"     : "Rare",
         "desc"       : "CHEWIE!",
-        "strength"   : "75",
-        "defense"    : "22"
+        "strength"   : "0",
+        "defense"    : "0"
     },
     "17": {
         "image"      : "https://i.imgur.com/Hq0869X.png",
@@ -193,7 +193,7 @@
         "defense"    : 777
     },
     "20": {
-        "image"      : "https://i.imgur.com/BgZHjT1.jpg",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716456951667621948/DonRicks.png",
         "name"       : "Don Ricks",
         "weight"     : "170",
         "rarity"     : "Common",
@@ -266,5 +266,50 @@
         "desc"       : "Private Kustin, reporting for duty.",
         "strength"   : 2,
         "defense"    : 2
+    },
+    "28" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716442532417896459/ricks_ionia.png",
+        "name"       : "Ricks",
+        "weight"     : "2389",
+        "rarity"     : "Common",
+        "desc"       : "Monkey see monkey do.",
+        "strength"   : 0.1,
+        "defense"    : 10
+    },
+    "29" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716456856465178634/AdventurerAlbertTemplate.png",
+        "name"       : "Adventurer Albert",
+        "weight"     : "87",
+        "rarity"     : "Common",
+        "desc"       : "'Catch their trail.' -Rengar",
+        "strength"   : 1,
+        "defense"    : 2
+    },
+    "30" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716459175206584380/HerbalistKustin.png",
+        "name"       : "Herbalist Kustin",
+        "weight"     : "39",
+        "rarity"     : "Common",
+        "desc"       : "Trust me, it grows.",
+        "strength"   : 1,
+        "defense"    : 2
+    },
+    "31" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716680503960272896/aaron.png",
+        "name"       : "Big Blue Turtle",
+        "weight"     : "908",
+        "rarity"     : "Common",
+        "desc"       : "AARONNNNNNNNN",
+        "strength"   : 2,
+        "defense"    : 2
+    },
+    "32" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716684866560983070/shrey.png",
+        "name"       : "Private Shrey",
+        "weight"     : "223",
+        "rarity"     : "Common",
+        "desc"       : "Private Shrey, reporting in.",
+        "strength"   : 1,
+        "defense"    : 3
     }
 }

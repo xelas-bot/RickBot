@@ -33,6 +33,13 @@ db = cluster["game"]
 db_players = db["players"]
 db_market = db["market"]
 
+
+def update_db_players():
+    for x in db_players.find():
+        player = Player(id=x["_id"], username=x["username"], currency=x["currency"], cards=x["cards"], crates=x["crates"], keys=x["keys"])
+        player.set_db()
+
+
 # card config
 with open("card_config.json", encoding='utf-8') as f:
     global card_config
@@ -57,6 +64,12 @@ with open('config.json') as f:
     config = json.load(f)
     f.close()
 
+# crates
+with open('data/crates.json') as f:
+    global crates
+    crates = json.load(f)
+    f.close()
+
 def update_things():
     with open("data/cards.json", encoding='utf-8') as f:
         global cards
@@ -79,7 +92,7 @@ def update_things():
 def update_players():
     players = {}
     for x in db_players.find():
-        player = Player(id=x["_id"], username=x["username"], currency=x["currency"], cards=x["cards"])
+        player = Player(id=x["_id"], username=x["username"], currency=x["currency"], cards=x["cards"], crates=x["crates"], keys=x["keys"], last_time=x["last_time"])
         players[x["_id"]] = player
     return players
 ##Market Commands
@@ -167,15 +180,17 @@ async def on_message(message):
     
     # only commands
     try:
-        if message.content[0] != config["prefix"]:
-            random.seed(a=None)
+        if message.content[0] != config["prefix"] and message.author.id in players:
             x = random.random()
-            if x < card_config["Drop_Rate"] and message.author.id in players:
+            if x < card_config["Special_Rate"]:
+                special_drop = random.random()
+                if special_drop < card_config["Special_Drop"]["Key"]:
+                    pass
+            elif x < card_config["Drop_Rate"]:
                 coin_drop = random.random()
-                if coin_drop < card_config["Coin Rate"]:
-                    random.seed(a=message.id)
+                if coin_drop < card_config["Coin_Rate"]:
                     spawn = random.random()
-                    drop = ''
+                    drop = 0
                     if spawn >= card_config["EX"]["drop"]:
                         drop = players[message.author.id].reward("EX")
                     elif spawn >= card_config["Legendary"]["drop"]:
@@ -188,9 +203,10 @@ async def on_message(message):
                         drop = players[message.author.id].reward("Uncommon")
                     else:
                         drop = players[message.author.id].reward("Common")
-                    embed = discord.Embed()
+                    embed = discord.Embed(description=message.author.name + " got " + str(drop) + " cash monies", color=config["embed_color"])
+                    embed.set_author(name="Cash Monies", icon_url="https://w0.pngwave.com/png/944/747/coins-png-clip-art.png")
+                    await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
                 else:
-                    random.seed(a=message.id)
                     spawn = random.random()
                     drop = ''
                     if spawn >= card_config["EX"]["drop"]:
@@ -380,7 +396,7 @@ async def on_message(message):
     if command == "bal":
         if message.author.id in players:
             embed = discord.Embed(description="Your current balance is: " + str(players[message.author.id].currency), color=config["embed_color"])
-            embed.set_author(name="Money", icon_url="https://w0.pngwave.com/png/944/747/coins-png-clip-art.png")
+            embed.set_author(name="Cash Monies", icon_url="https://w0.pngwave.com/png/944/747/coins-png-clip-art.png")
             await message.channel.send(embed=embed)
         else:
             await message.channel.send(config["join_msg"].replace("%", config["prefix"]))
@@ -735,7 +751,92 @@ async def on_message(message):
                     await message.channel.send("That's not a valid id or money!")
         else:
             await message.channel.send(config["join_msg"].replace("%", config["prefix"]))
+    
+    if command == "daily":
+        author = players[message.author.id]
+        random.seed(a=message.id)
+        d = random.random()
+        if(len(args) != 0):
+            if message.author.id in config["administrators"]:
+                if(args[0].lower() == 'reset'):
+                    author.reset_daily()
+                else:
+                    author.reset_daily()
+                    d = float(args[0])
+        if(author.daily()):
+            embed=discord.Embed(title="Daily Reward", description="You collected your rewards! You got: ", color=0x8400ff)
+            w = crates["daily"]["weight"]
+            print(str(d))
+            if d < w[0]:
+                m = author.add_currency(random.randrange(200,300))
+                embed.add_field(name="Money", value=m, inline=True)
+            elif d < w[1]:
+                drop = author.spawn("Common", currency=False)
+                embed.add_field(name="Card", value=cards[drop]["name"] + " (Common)", inline=True)
+            elif d < w[2]:
+                drop = author.spawn("Uncommon", currency=False)
+                embed.add_field(name="Card", value=cards[drop]["name"] + " (Uncommon)", inline=True)
+            elif d < w[3]:
+                drop= author.spawn("Common",currency=False)
+                embed.add_field(name="Card", value=cards[drop]["name"] + " (Common)", inline=True)
+                drop= author.spawn("Uncommon", currency=False)
+                embed.add_field(name="Card", value=cards[drop]["name"] + " (Uncommon)", inline=True)
+            elif d < w[4]:
+                m = author.add_currency(random.randrange(500,750))
+                embed.add_field(name="Money", value=m, inline=True)
+            elif d < w[5]:
+                drop = author.spawn("Epic", currency=False)
+                embed.add_field(name="Card", value=cards[drop]["name"] + " (Epic)", inline=True)
+                m = author.add_currency(1000)
+                embed.add_field(name="Money", value=m, inline=True)
+            else:
+                drop = author.spawn("Legendary", currency=False)
+                embed.add_field(name="Card", value=cards[drop]["name"] + " (Legendary)", inline=True)
+                m = author.add_currency(2000)
+                embed.add_field(name="Money", value=m, inline=True)
+            random.seed()
+            await message.channel.send("<@" + str(message.author.id) + ">", embed=embed)
+        else:
+            await message.channel.send("You have already claimed your daily reward today. You can claim it again tomorrow.")
 
+    def isFloat(string):
+        try:
+            float(string)
+            return True
+        except ValueError:
+            return False
+
+    if command == "bet":
+        if(len(args) < 2):
+            await message.channel.send("Not enough arguments. Usage: `bet <amount> <chance>`.")
+        else:
+            if(isFloat(args[0]) and isFloat(args[1])):
+                await message.channel.send("Betting")
+
+    if command == "crates":
+        player = players[message.author.id]
+        player_crates = player.get_crates()
+        player_keys = player.get_keys()
+
+        desc = 'Crates:'
+        for x in crates["crates"]:
+            if x != "weights":
+                if x in player_crates:
+                    desc += crates["crates"][x]["name"] + " x" + player_crates[x] + '\n'
+                else:
+                    desc += crates["crates"][x]["name"] + " x0" + '\n'
+        desc += 'Keys:'
+        for x in crates["keys"]:
+            if x != "weights":
+                if x in player_keys:
+                    desc += crates["keys"][x]["name"] + " x" + player_keys[x] + '\n'
+                else:
+                    desc += crates["keys"][x]["name"] + " x0" + '\n'
+
+        embed = discord.Embed(title="Your Crates and Keys:", description=desc, color=config["embed_color"])
+        embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
+        await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
+        
 
 
 with open("auth.json") as f:

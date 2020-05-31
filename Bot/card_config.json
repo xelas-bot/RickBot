@@ -3,6 +3,11 @@
     "Sell_Rate"   : 0.8,
     "Coin_Rate"   : 0.6,
     "Coin_Dev"    : 0.2, 
+    "Special_Rate": 0.01,
+    "Special_Drop": {
+        "Key"     : 0.6,
+        "Crate"   : 1
+    },
     "Common": {
         "drop"    : 0,
         "currency": 100,
@@ -19,21 +24,21 @@
     },
     "Rare": {
         "drop"    : 0.85,
-        "currency": 500,
+        "currency": 600,
         "color"   : 16729670,
         "stdv"    : 0.2,
         "weight"  : 1000
     },
     "Epic": {
         "drop"    : 0.97,
-        "currency": 1000,
+        "currency": 1500,
         "color"   : 13107400,
         "stdv"    : 0.2,
         "weight"  : 1000
     },
     "Legendary": {
         "drop"    : 0.985,
-        "currency": 2500,
+        "currency": 4000,
         "color"   : 15592809,
         "stdv"    : 0.2,
         "weight"  : 1000
@@ -44,5 +49,10 @@
         "color"   : 16777214,
         "stdv"    : 0.2,
         "weight"  : 1000
+    },
+    "Special": {
+        "drop"    : -1,
+        "currency": 25000,
+        "color"   : 0
     }
 }

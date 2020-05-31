@@ -4,6 +4,7 @@ from pymongo import MongoClient
 import urllib.parse
 import json
 import random
+from datetime import datetime, timedelta
 
 # auth
 with open("auth.json") as f:
@@ -30,18 +31,27 @@ with open("card_config.json") as f:
     card_config = json.load(f)
     f.close()
 
+# crates config
+with open("data/crates.json") as f:
+    global crates_config
+    crates_config = json.load(f)
+    f.close()
+
 db = cluster["game"]
 collection = db["players"]
 
 class Player:
-    def __init__(self, id, username, currency=100, cards=[]):
+    def __init__(self, id, username, currency=100, cards=[], crates=[], keys=[], last_time=datetime.today() - timedelta(1)):
         self.id = id
         self.username = username
         self.currency = currency
         self.cards = cards
+        self.crates = crates
+        self.keys = keys
+        self.last_time = last_time
 
     def create_player(self):
-        post = {"_id": self.id, "username": self.username, "currency": self.currency, "cards": self.cards}
+        post = {"_id": self.id, "username": self.username, "currency": self.currency, "cards": self.cards, "crates": self.crates, "keys": self.keys, "last_time": self.last_time}
         collection.insert_one(post)
         print("Created player")
 
@@ -49,21 +59,41 @@ class Player:
         self.get_db()
         self.currency += currency
         self.set_db()
+        return currency
     
     def set_currency(self, currency):
         self.get_db()
         self.currency = currency
         self.set_db()
+        return currency
 
     def set_db(self):
         myquery = {"_id": self.id}
-        newvalues = { "$set": {"currency": self.currency, "cards": self.cards}}
+        newvalues = { "$set": {"currency": self.currency, "cards": self.cards, "crates": self.crates, "keys": self.keys, "last_time": self.last_time}}
         collection.update_one(myquery, newvalues)
     
     def get_db(self):
         data = collection.find_one({"_id": self.id})
         self.currency = data["currency"]
         self.cards = data["cards"]
+        self.crates = data["crates"]
+        self.keys = data["keys"]
+        self.last_time = data["last_time"]
+    
+    def daily(self):
+        self.get_db()
+        if datetime.date(self.last_time) == datetime.date(datetime.today()):
+            return False
+        print(datetime.date(self.last_time))
+        self.last_time = datetime.today()
+        self.set_db()
+        return True
+
+    def reset_daily(self):
+        self.get_db()
+        self.last_time = datetime.today() - timedelta(1)
+        self.set_db()
+        return True
     
     def compare(self, index, card_ids):
         print(index)
@@ -129,7 +159,28 @@ class Player:
         return len(self.cards)
     
     def get_rarities(self, rarity):
+        self.get_db()
         return [(i, x) for i, x in enumerate(self.cards) if card_data[x]["rarity"] == rarity]
+    
+    def get_crates(self):
+        self.get_db()
+        crates = {}
+        for x in self.crates:
+            if x in crates:
+                crates[x] += 1
+            else:
+                crates[x] == 1
+        return crates
+    
+    def get_keys(self):
+        self.get_db()
+        keys = {}
+        for x in self.keys:
+            if x in keys:
+                keys[x] += 1
+            else:
+                keys[x] == 1
+        return keys
     
     @staticmethod
     def update_rarities():
