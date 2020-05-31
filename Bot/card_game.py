@@ -813,17 +813,20 @@ async def on_message(message):
         else:
             if(isFloat(args[0]) and isFloat(args[1])):
                 if(float(args[1]) > 1 or float(args[1]) < 0):
-                    message.channel.send("Proportion must be ")
-                    pass
+                    message.channel.send("Proportion must be greater than 0 and less than 1.")
+                elif(float(args[0]) < 0 or float(args[0] > players[user].currency)):
+                    message.channel.send("You don't have enough money to make this bet. You only have %s money." % players[user].currency)
                 else:
-                    await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet." % args[0], args[1], config["prefix"], config["prefix"])
+                    await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet." % (args[0], args[1], config["prefix"], config["prefix"]))
                     try:
                         def check_list(m):
                                 return m.author == user and (m.content == '!bet_confirm' or m.content == '!bet_cancel')
                         response = await bot.wait_for("message",timeout = 60.0, check=check_list)
                         if(response.content == "!bet_confirm"):
-                        
-                            
+                            result = random.random()
+                            if(result > float(args[1])):
+                                win = players[user].add_currency(args[0] * (1-float(args[1])) * 0.9)
+                                
                             pass
                         else:
                             await message.channel.send("Betting cancelled");
@@ -858,20 +861,20 @@ async def on_message(message):
             return
         
         if args[0] == 'buy':
-            try:
-                if int(args[0]) >= 1 and int(args[0]) <= len(crates["keys"]) - 1:
-                    if player.has_currency(crates["keys"][args[0]]["price"]):
-                        player.add_currency(-crates["keys"][args[0]]["price"])
-                        player.give_key(args[0])
-                        embed = discord.Embed(title="Your Crates and Keys:", description=desc, color=config["embed_color"])
-                        embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
-                        await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
-                    else:
-                        await message.channel.send("You don't have enough money!")
+            #try:
+            if int(args[1]) >= 1 and int(args[1]) <= len(crates["keys"]) - 1:
+                if player.has_currency(crates["keys"][args[1]]["price"]):
+                    player.add_currency(-crates["keys"][args[1]]["price"])
+                    player.give_key(args[1])
+                    embed = discord.Embed(description=message.author.name + " bought a " + crates["keys"][args[1]]["name"], color=config["embed_color"])
+                    embed.set_author(name="Crates", icon_url="https://i.imgur.com/ZVQTsnh.png")
+                    await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
                 else:
-                    await message.channel.send("Please enter a valid id (1-" + str(len(crates["keys"]) - 1) + ")")
-            except Exception:
-                pass
+                    await message.channel.send("You don't have enough money!")
+            else:
+                await message.channel.send("Please enter a valid id (1-" + str(len(crates["keys"]) - 1) + ")")
+            #except Exception:
+                #pass
         
 
 
