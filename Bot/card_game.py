@@ -812,13 +812,14 @@ async def on_message(message):
             await message.channel.send("Not enough arguments. Usage: `bet <amount> <chance>`.")
         else:
             if(isFloat(args[0]) and isFloat(args[1])):
+                if(float(args[1]) > 1 or float(args[1]) < 0):
                 await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet." % args[0], args[1], config["prefix"], config["prefix"])
                 try:
                     def check_list(m):
                             return m.author == user and (m.content == '!bet_confirm' or m.content == '!bet_cancel')
                     response = await bot.wait_for("message",timeout = 60.0, check=check_list)
                     if(response.content == "!bet_confirm"):
-                        
+                    
                         
                         pass
                     else:
