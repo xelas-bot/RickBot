@@ -66,10 +66,12 @@ class Player:
         self.cards = data["cards"]
     
     def compare(self, index, card_ids):
+        print(index)
+        print(card_ids)
         self.get_db()
         same = True
         for i, c in zip(index, card_ids):
-            if int(i) - 1 >= len(self.cards) or self.cards[int(i) - 1] != c:
+            if int(i) > len(self.cards) or int(i) < 1 or self.cards[int(i) - 1] != c:
                 same = False
         return same
 
@@ -120,3 +122,10 @@ class Player:
     
     def get_rarities(self, rarity):
         return [(i, x) for i, x in enumerate(self.cards) if card_data[x]["rarity"] == rarity]
+    
+    @staticmethod
+    def update_rarities():
+        with open("data/card_rarity.json") as f:
+            global card_rarity
+            card_rarity = json.load(f)
+            f.close()

@@ -137,7 +137,7 @@
         "defense"    : "950"
     },
     "15": {
-        "image"      : "https://cdn.discordapp.com/attachments/702914557189816370/716116543787892746/Snapchat-578240518.jpg",
+        "image"      : "https://media.discordapp.net/attachments/706686059605393498/716362971021836390/Thick_rick-Recovered.png?width=436&height=611",
         "name"       : "Thiccy Titus",
         "weight"     : "69",
         "rarity"     : "Rare",
@@ -204,13 +204,67 @@
         "defense"    : 1
     },
     "21" : {
-        "image"      : "https://i.imgur.com/BgZHjT1.jpg",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716457917376757821/The_nest.png",
         "name"       : "Ze Nest",
         "weight"     : "77",
         "rarity"     : "Common",
         "desc"       : "Names Ze Ernest. Never friendly.",
         "Sweatiness" : "41142",
         "strength"   : 3,
+        "defense"    : 2
+    },
+    "22" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716516004674404402/shrimp.png",
+        "name"       : "Sotsugyou Shrimp",
+        "weight"     : "3",
+        "rarity"     : "Common",
+        "desc"       : "Still gets clapped by JP Duolingo tho.",
+        "strength"   : 4,
+        "defense"    : 2
+    },
+    "23" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716506559399854120/general_caleb.png",
+        "name"       : "4 Star General Caleb",
+        "weight"     : "155",
+        "rarity"     : "Legendary",
+        "desc"       : "\"I don't know about THAT one.\" -General Caleb",
+        "strength"   : 594,
+        "defense"    : 151
+    },
+    "24" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716503367156891648/BlackMarketDealers-Recovered.png",
+        "name"       : "Black Market Dealers",
+        "weight"     : "6969",
+        "rarity"     : "Rare",
+        "desc"       : "You ask 'em. We go 'em.",
+        "strength"   : 25,
+        "defense"    : 5
+    },
+    "25" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716479802672152636/dapper_fatbert.png",
+        "name"       : "Dapper Fatbert",
+        "weight"     : "420",
+        "rarity"     : "Legendary",
+        "desc"       : "Mr. Steal-yo-girl",
+        "strength"   : 420,
+        "defense"    : 77
+    },
+    "26" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716457587578503249/commander_kustin.png",
+        "name"       : "Commander Kustin",
+        "weight"     : "1337",
+        "rarity"     : "Epic",
+        "desc"       : "At ease.",
+        "strength"   : 23,
+        "defense"    : 97
+    },
+    "27" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716461087326994562/private_kustin.png",
+        "name"       : "Private Kustin",
+        "weight"     : "1",
+        "rarity"     : "Common",
+        "desc"       : "Private Kustin, reporting for duty.",
+        "strength"   : 2,
         "defense"    : 2
     }
 }

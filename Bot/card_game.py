@@ -57,6 +57,25 @@ with open('config.json') as f:
     config = json.load(f)
     f.close()
 
+def update_things():
+    with open("data/cards.json", encoding='utf-8') as f:
+        global cards
+        cards = json.load(f)
+        f.close()
+    with open("card_config.json", encoding='utf-8') as f:
+        global card_config
+        card_config = json.load(f)
+        f.close()
+    with open("help.json") as f:
+        global help_msgs
+        help_msgs = json.load(f)
+        f.close()
+    with open('config.json') as f:
+        global config
+        config = json.load(f)
+        f.close()
+
+
 def update_players():
     players = {}
     for x in db_players.find():
@@ -201,7 +220,8 @@ async def on_message(message):
         embed.set_author(name="Help", icon_url="https://img.icons8.com/carbon-copy/2x/question-mark.png")
         await message.channel.send(embed=embed)
 
-    if command == "update_rarities":
+    if command == "update":
+        update_things()
         rarities = {
             "Common"   : [],
             "Uncommon" : [],
@@ -217,7 +237,8 @@ async def on_message(message):
             json.dump(rarities, f, ensure_ascii=False)
             f.close()
         
-        await message.channel.send('Rarities have been updated!')
+        Player.update_rarities()
+        await message.channel.send('Cards have been updated!')
 
     if command == "tradeup":
         if message.author.id in players:
@@ -279,9 +300,6 @@ async def on_message(message):
                     await message.channel.send("The cards must be of the same quality!")
         else:
             await message.channel.send(config["join_msg"].replace("%", config["prefix"]))
-
-    if command == "update_cards":
-
 
     if command == "reroll":
         if message.author.id in players:

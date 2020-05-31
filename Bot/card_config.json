@@ -4,31 +4,43 @@
     "Common": {
         "drop"    : 0,
         "currency": 100,
-        "color"   : 6618980
+        "color"   : 6618980,
+        "stdv"    : 0.2,
+        "weight"  : 1000
     },
     "Uncommon": {
         "drop"    : 0.7,
         "currency": 250,
-        "color"   : 46335
+        "color"   : 46335,
+        "stdv"    : 0.2,
+        "weight"  : 1000
     },
     "Rare": {
         "drop"    : 0.85,
         "currency": 500,
-        "color"   : 16729670
+        "color"   : 16729670,
+        "stdv"    : 0.2,
+        "weight"  : 1000
     },
     "Epic": {
         "drop"    : 0.97,
         "currency": 1000,
-        "color"   : 13107400
+        "color"   : 13107400,
+        "stdv"    : 0.2,
+        "weight"  : 1000
     },
     "Legendary": {
         "drop"    : 0.985,
         "currency": 2500,
-        "color"   : 15592809
+        "color"   : 15592809,
+        "stdv"    : 0.2,
+        "weight"  : 1000
     },
     "EX": {
         "drop"    : 0.998,
         "currency": 10000,
-        "color"   : 16777214
+        "color"   : 16777214,
+        "stdv"    : 0.2,
+        "weight"  : 1000
     }
 }

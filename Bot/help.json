@@ -1,9 +1,15 @@
 {
-    "help"     : "shows this help page",
-    "create"   : "become a part of the game",
-    "list"     : "list all of your cards",
-    "show"     : "[show id] shows a specific card",
-    "bal"      : "shows your current balance",
-    "tradeup"  : "Trade 10 cards of the same quality to gain a card of a higher quality",
-    "reroll"  : "Remove 3 cards of the same quality and gain a different one of the same quality"
+    "help"                 : "shows this help page",
+    "create"               : "become a part of the game",
+    "list"                 : "list all of your cards",
+    "list @player"         : "list another player's cards",
+    "show"                 : "[show id] shows your card",
+    "inspect"              : "[inspect id] shows a specific card (You do not need to own it)",
+    "bal"                  : "shows your current balance",
+    "sell"                 : "[sell id] sells a card",
+    "tradeup"              : "Trade 10 cards of the same quality to gain a card of a higher quality",
+    "reroll"               : "Remove 3 cards of the same quality and gain a different one of the same quality",
+    "market"               : "view listings on market",
+    "market sell id price" : "create a listing on the market",
+    "market buy id"        : "buy a listing on the market"
 }
