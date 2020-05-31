@@ -826,8 +826,10 @@ async def on_message(message):
                             result = random.random()
                             if(result > float(args[1])):
                                 win = players[user].add_currency(args[0] * (1-float(args[1])) * 0.9)
-                                
-                            pass
+                                embed = discord.Embed(title="You WIN!", description="You won " + str(win) + "!", color=0x00ff00)
+                                await message.channel.send(embed=embed)
+                            else:
+                                lose
                         else:
                             await message.channel.send("Betting cancelled");
                     except Exception:
@@ -844,14 +846,14 @@ async def on_message(message):
             for x in crates["crates"]:
                 if x != "weights":
                     if x in player_crates:
-                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " x" + player_crates[x] + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " (" + crates["crates"][x][] ) x" + str(player_crates[x]) + '\n'
                     else:
                         desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " x0" + '\n'
             desc += '\n**Keys:**\n'
             for x in crates["keys"]:
                 if x != "weights":
                     if x in player_keys:
-                        desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " ($" + str(crates["keys"][x]["price"]) + ") x" + player_keys[x] + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " ($" + str(crates["keys"][x]["price"]) + ") x" + str(player_keys[x]) + '\n'
                     else:
                         desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " ($" + str(crates["keys"][x]["price"]) + ") x0" + '\n'
 

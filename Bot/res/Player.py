@@ -174,7 +174,7 @@ class Player:
             if x in crates:
                 crates[x] += 1
             else:
-                crates[x] == 1
+                crates[x] = 1
         return crates
     
     def get_keys(self):
@@ -184,7 +184,7 @@ class Player:
             if x in keys:
                 keys[x] += 1
             else:
-                keys[x] == 1
+                keys[x] = 1
         return keys
     
     @staticmethod
