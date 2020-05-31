@@ -37,7 +37,7 @@ with open("./Bot/data/crates.json") as f:
     crates_config = json.load(f)
     f.close()
 
-db = cluster["game"]
+db = cluster["heroku_fl3jf8nf"]
 collection = db["players"]
 
 class Player:
