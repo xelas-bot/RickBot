@@ -812,6 +812,7 @@ async def on_message(message):
         else:
             if(isFloat(args[0]) and isFloat(args[1])):
                 await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet." % args[0], args[1], config["prefix"])
+                response = await bot.wait_for("message",timeout = 60.0, check=check_list)
 
     if command == "crates":
         player = players[message.author.id]
@@ -825,18 +826,19 @@ async def on_message(message):
                     if x in player_crates:
                         desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " x" + player_crates[x] + '\n'
                     else:
-                        desc += 'id: x' + x + ' | ' + crates["crates"][x]["name"] + " x0" + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " x0" + '\n'
             desc += '\n**Keys:**\n'
             for x in crates["keys"]:
                 if x != "weights":
                     if x in player_keys:
-                        desc += 'id: x' + x + ' | ' + crates["keys"][x]["name"] + " x" + player_keys[x] + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " x" + player_keys[x] + '\n'
                     else:
-                        desc += 'id: x' + x + ' | ' + crates["keys"][x]["name"] + " x0" + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["keys"][x]["name"] + " x0" + '\n'
 
             embed = discord.Embed(title="Your Crates and Keys:", description=desc, color=config["embed_color"])
             embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
             await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
+            return
         
         if args[0] == 'buy':
             pass

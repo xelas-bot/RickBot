@@ -3,5 +3,4 @@ pymongo
 dnspython
 schedule
 numpy
-json
 dnspython
