@@ -811,31 +811,35 @@ async def on_message(message):
             await message.channel.send("Not enough arguments. Usage: `bet <amount> <chance>`.")
         else:
             if(isFloat(args[0]) and isFloat(args[1])):
-                await message.channel.send("Betting `%d` with chance `%d`. Type `bet confirm")
+                await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet." % args[0], args[1], config["prefix"])
 
     if command == "crates":
         player = players[message.author.id]
         player_crates = player.get_crates()
         player_keys = player.get_keys()
 
-        desc = '**Crates:**\n'
-        for x in crates["crates"]:
-            if x != "weights":
-                if x in player_crates:
-                    desc += crates["crates"][x]["name"] + " x" + player_crates[x] + '\n'
-                else:
-                    desc += crates["crates"][x]["name"] + " x0" + '\n'
-        desc += '**Keys:**\n'
-        for x in crates["keys"]:
-            if x != "weights":
-                if x in player_keys:
-                    desc += crates["keys"][x]["name"] + " x" + player_keys[x] + '\n'
-                else:
-                    desc += crates["keys"][x]["name"] + " x0" + '\n'
+        if len(args) == 0:
+            desc = '**Crates:**\n'
+            for x in crates["crates"]:
+                if x != "weights":
+                    if x in player_crates:
+                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " x" + player_crates[x] + '\n'
+                    else:
+                        desc += 'id: x' + x + ' | ' + crates["crates"][x]["name"] + " x0" + '\n'
+            desc += '\n**Keys:**\n'
+            for x in crates["keys"]:
+                if x != "weights":
+                    if x in player_keys:
+                        desc += 'id: x' + x + ' | ' + crates["keys"][x]["name"] + " x" + player_keys[x] + '\n'
+                    else:
+                        desc += 'id: x' + x + ' | ' + crates["keys"][x]["name"] + " x0" + '\n'
 
-        embed = discord.Embed(title="Your Crates and Keys:", description=desc, color=config["embed_color"])
-        embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
-        await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
+            embed = discord.Embed(title="Your Crates and Keys:", description=desc, color=config["embed_color"])
+            embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
+            await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
+        
+        if args[0] == 'buy':
+            pass
         
 
 
