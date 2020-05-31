@@ -817,7 +817,7 @@ async def on_message(message):
                 elif(float(args[0]) < 0 or float(args[0]) > players[user.id].currency):
                     await message.channel.send("You don't have enough money to make this bet. You only have %s money." % players[user.id].currency)
                 else:
-                    win_amount = 1 / float(args[1]) * args[0] * 0.9
+                    win_amount = int(1 / float(args[1]) * float(args[0]) * 0.9) - int(args[0])
                     await message.channel.send("Betting `%s` with chance `%s`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet. Potential win: `%s`" % (args[0], args[1], config["prefix"], config["prefix"], str(win_amount)))
                     try:
                         def check_list(m):
