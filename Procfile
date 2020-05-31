@@ -1,2 +1,2 @@
-worker: python Bot/card_game.py
+worker: python ./Bot/card_game.py
 
