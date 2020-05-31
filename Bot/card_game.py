@@ -811,21 +811,21 @@ async def on_message(message):
             await message.channel.send("Not enough arguments. Usage: `bet <amount> <chance>`.")
         else:
             if(isFloat(args[0]) and isFloat(args[1])):
-                await message.channel.send("Betting")
+                await message.channel.send("Betting `%d` with chance `%d`. Type `bet confirm")
 
     if command == "crates":
         player = players[message.author.id]
         player_crates = player.get_crates()
         player_keys = player.get_keys()
 
-        desc = 'Crates:'
+        desc = '*Crates:*\n'
         for x in crates["crates"]:
             if x != "weights":
                 if x in player_crates:
                     desc += crates["crates"][x]["name"] + " x" + player_crates[x] + '\n'
                 else:
                     desc += crates["crates"][x]["name"] + " x0" + '\n'
-        desc += 'Keys:'
+        desc += '*Keys:*\n'
         for x in crates["keys"]:
             if x != "weights":
                 if x in player_keys:
