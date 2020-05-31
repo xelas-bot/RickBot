@@ -171,22 +171,41 @@ async def on_message(message):
             random.seed(a=None)
             x = random.random()
             if x < card_config["Drop_Rate"] and message.author.id in players:
-                random.seed(a=message.id)
-                spawn = random.random()
-                drop = ''
-                if spawn >= card_config["EX"]["drop"]:
-                    drop = players[message.author.id].spawn("EX")
-                elif spawn >= card_config["Legendary"]["drop"]:
-                    drop = players[message.author.id].spawn("Legendary")
-                elif spawn >= card_config["Epic"]["drop"]:
-                    drop = players[message.author.id].spawn("Epic")
-                elif spawn >= card_config["Rare"]["drop"]:
-                    drop = players[message.author.id].spawn("Rare")
-                elif spawn >= card_config["Uncommon"]["drop"]:
-                    drop = players[message.author.id].spawn("Uncommon")
+                coin_drop = random.random()
+                if coin_drop < card_config["Coin Rate"]:
+                    random.seed(a=message.id)
+                    spawn = random.random()
+                    drop = ''
+                    if spawn >= card_config["EX"]["drop"]:
+                        drop = players[message.author.id].reward("EX")
+                    elif spawn >= card_config["Legendary"]["drop"]:
+                        drop = players[message.author.id].reward("Legendary")
+                    elif spawn >= card_config["Epic"]["drop"]:
+                        drop = players[message.author.id].reward("Epic")
+                    elif spawn >= card_config["Rare"]["drop"]:
+                        drop = players[message.author.id].reward("Rare")
+                    elif spawn >= card_config["Uncommon"]["drop"]:
+                        drop = players[message.author.id].reward("Uncommon")
+                    else:
+                        drop = players[message.author.id].reward("Common")
+                    embed = discord.Embed()
                 else:
-                    drop = players[message.author.id].spawn("Common")
-                await show_card(message, drop, message.author.name + " caught a:", False, None, True)
+                    random.seed(a=message.id)
+                    spawn = random.random()
+                    drop = ''
+                    if spawn >= card_config["EX"]["drop"]:
+                        drop = players[message.author.id].spawn("EX", currency=True)
+                    elif spawn >= card_config["Legendary"]["drop"]:
+                        drop = players[message.author.id].spawn("Legendary", currency=True)
+                    elif spawn >= card_config["Epic"]["drop"]:
+                        drop = players[message.author.id].spawn("Epic", currency=True)
+                    elif spawn >= card_config["Rare"]["drop"]:
+                        drop = players[message.author.id].spawn("Rare", currency=True)
+                    elif spawn >= card_config["Uncommon"]["drop"]:
+                        drop = players[message.author.id].spawn("Uncommon", currency=True)
+                    else:
+                        drop = players[message.author.id].spawn("Common", currency=True)
+                    await show_card(message, drop, message.author.name + " caught a:", False, None, True)
             return
     except Exception:
         return

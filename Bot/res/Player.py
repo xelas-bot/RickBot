@@ -89,7 +89,14 @@ class Player:
         else:
             return False
     
-    def spawn(self, rarity, exclude = []):
+    def reward(self, rarity):
+        self.get_db()
+        money = random.randint(card_config[rarity]["currency"] * (1 - card_config["Coin_Dev"]), card_config[rarity]["currency"] * (1 + card_config["Coin_Dev"]))
+        self.currency += money
+        self.set_db()
+        return money
+    
+    def spawn(self, rarity, exclude = [], currency = False):
         self.get_db()
         drops = [x for x in card_rarity[rarity] if not x in exclude]
         if len(drops) <= 0:
@@ -97,7 +104,8 @@ class Player:
         drop = random.choice(drops)
         print(self.username + " got a " + card_data[drop]["name"] + " (" + card_data[drop]["rarity"] + ")")
         self.cards.append(drop)
-        self.currency += card_config[rarity]["currency"] * (1 - card_config["Sell_Rate"])
+        if currency:
+            self.currency += card_config[rarity]["currency"] * (1 - card_config["Sell_Rate"])
         self.set_db()
         return drop
     

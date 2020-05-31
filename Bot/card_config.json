@@ -1,6 +1,8 @@
 {
-    "Drop_Rate"   : 0.025,
-    "Sell_Rate"   : 0.2,
+    "Drop_Rate"   : 0.05,
+    "Sell_Rate"   : 0.8,
+    "Coin_Rate"   : 0.6,
+    "Coin_Dev"    : 0.2, 
     "Common": {
         "drop"    : 0,
         "currency": 100,
