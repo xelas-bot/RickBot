@@ -807,12 +807,20 @@ async def on_message(message):
             return False
 
     if command == "bet":
+        user = message.author
         if(len(args) < 2):
             await message.channel.send("Not enough arguments. Usage: `bet <amount> <chance>`.")
         else:
             if(isFloat(args[0]) and isFloat(args[1])):
                 await message.channel.send("Betting `%d` with chance `%d`. Type `%sbet_confirm` to confirm your bet." % args[0], args[1], config["prefix"])
-                response = await bot.wait_for("message",timeout = 60.0, check=check_list)
+                try:
+                    def check_list(m):
+                            return m.author == user and (m.content == "!back" or message.content == "!next")
+                    response = await bot.wait_for("message",timeout = 60.0, check=check_list)
+                    if(response.)
+                except Exception:
+                    await message.channel.send("Betting cancelled.")
+                    pass
 
     if command == "crates":
         player = players[message.author.id]
@@ -841,6 +849,8 @@ async def on_message(message):
             return
         
         if args[0] == 'buy':
+            try:
+                if int(args[0]) >= 1 and int(args[0]) <= len(crates[keys])
             pass
         
 
