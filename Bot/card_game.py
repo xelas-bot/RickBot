@@ -22,7 +22,7 @@ import time
 
 
 # Mongo auth
-with open("auth.json") as f:
+with open("./Bot/auth.json") as f:
     auth = json.load(f)
     global cluster
     cluster = MongoClient(auth["mongo_key"])
@@ -41,49 +41,49 @@ def update_db_players():
         player.set_db()
 
 # card config
-with open("card_config.json", encoding='utf-8') as f:
+with open("./Bot/card_config.json", encoding='utf-8') as f:
     global card_config
     card_config = json.load(f)
     f.close()
 
 # card data
-with open("data/cards.json", encoding='utf-8') as f:
+with open("./Bot/data/cards.json", encoding='utf-8') as f:
     global cards
     cards = json.load(f)
     f.close()
 
 # help
-with open("help.json") as f:
+with open("./Bot/help.json") as f:
     global help_msgs
     help_msgs = json.load(f)
     f.close()
 
 # config options
-with open('config.json') as f:
+with open('./Bot/config.json') as f:
     global config
     config = json.load(f)
     f.close()
 
 # crates
-with open('data/crates.json') as f:
+with open('./Bot/data/crates.json') as f:
     global crates
     crates = json.load(f)
     f.close()
 
 def update_things():
-    with open("data/cards.json", encoding='utf-8') as f:
+    with open("./Bot/data/cards.json", encoding='utf-8') as f:
         global cards
         cards = json.load(f)
         f.close()
-    with open("card_config.json", encoding='utf-8') as f:
+    with open("./Bot/card_config.json", encoding='utf-8') as f:
         global card_config
         card_config = json.load(f)
         f.close()
-    with open("help.json") as f:
+    with open("./Bot/help.json") as f:
         global help_msgs
         help_msgs = json.load(f)
         f.close()
-    with open('config.json') as f:
+    with open('./Bot/config.json') as f:
         global config
         config = json.load(f)
         f.close()
@@ -152,7 +152,7 @@ async def on_ready():
     print('Bot is running')
 
 def check_rarity(card):
-    with open('data/card_rarity.json') as f:
+    with open('./Bot/data/card_rarity.json') as f:
         card_rarity = json.load(f)
         f.close()
         for x in card_rarity:
@@ -276,7 +276,7 @@ async def on_message(message):
         for x in cards:
             rarities[cards[str(x)]["rarity"]].append(str(x))
         
-        with open("data/card_rarity.json", "w") as f:
+        with open("./Bot/data/card_rarity.json", "w") as f:
             json.dump(rarities, f, ensure_ascii=False)
             f.close()
         
@@ -932,7 +932,7 @@ async def on_message(message):
         
 
 
-with open("auth.json") as f:
+with open("./Bot/auth.json") as f:
     auth = json.load(f)
     bot.run(auth["token"])
     f.close()
