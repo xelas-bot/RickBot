@@ -41,12 +41,21 @@ db = cluster["game"]
 collection = db["players"]
 
 class Player:
-    def __init__(self, id, username, currency=100, cards=[], crates=[], keys=[], last_time=datetime.today() - timedelta(1)):
+    def __init__(self, id, username, currency=100, cards=[], crates={}, keys={}, last_time=datetime.today() - timedelta(1)):
         self.id = id
         self.username = username
         self.currency = currency
         self.cards = cards
+
+        for x in crates_config["crates"]:
+            if x != "weights":
+                if not x in crates:
+                    crates[x] = 0
         self.crates = crates
+        for x in crates_config["keys"]:
+            if x != "weights":
+                if not x in keys:
+                    keys[x] = 0
         self.keys = keys
         self.last_time = last_time
 
@@ -153,7 +162,12 @@ class Player:
     
     def give_key(self, key):
         self.get_db()
-        self.keys.append(key)
+        self.keys[key] += 1
+        self.set_db()
+    
+    def give_crate(self, crate):
+        self.get_db()
+        self.crates[crate] += 1
         self.set_db()
     
     def has_currency(self, currency):
@@ -169,23 +183,11 @@ class Player:
     
     def get_crates(self):
         self.get_db()
-        crates = {}
-        for x in self.crates:
-            if x in crates:
-                crates[x] += 1
-            else:
-                crates[x] = 1
-        return crates
+        return self.crates
     
     def get_keys(self):
         self.get_db()
-        keys = {}
-        for x in self.keys:
-            if x in keys:
-                keys[x] += 1
-            else:
-                keys[x] = 1
-        return keys
+        return self.keys
     
     @staticmethod
     def update_rarities():

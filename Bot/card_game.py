@@ -8,6 +8,7 @@ from discord.ext import commands
 import urllib.parse
 import json
 import pymongo
+import numpy
 from pymongo import MongoClient
 from res.Player import Player
 import schedule
@@ -36,9 +37,8 @@ db_market = db["market"]
 
 def update_db_players():
     for x in db_players.find():
-        player = Player(id=x["_id"], username=x["username"], currency=x["currency"], cards=x["cards"], crates=x["crates"], keys=x["keys"])
+        player = Player(id=x["_id"], username=x["username"], currency=x["currency"], cards=x["cards"], last_time=x["last_time"])
         player.set_db()
-
 
 # card config
 with open("card_config.json", encoding='utf-8') as f:
@@ -185,7 +185,15 @@ async def on_message(message):
             if x < card_config["Special_Rate"]:
                 special_drop = random.random()
                 if special_drop < card_config["Special_Drop"]["Key"]:
-                    pass
+                    drops = [str(x + 1) for x in range(len(crates["keys"]["weights"]))]
+                    drop = numpy.random.choice(drops, 1, p=crates["keys"]["weights"])[0]
+                    players[message.author.id].give_key(drop)
+                    print(message.author.name + " got a " + crates["keys"][drop]["name"] + " worth $" + str(crates["keys"][drop]["price"]))
+                else:
+                    drops = [str(x + 1) for x in range(len(crates["crates"]["weights"]))]
+                    drop = numpy.random.choice(drops, 1, p=crates["crates"]["weights"])[0]
+                    players[message.author.id].give_crate(drop)
+                    print(message.author.name + " got a " + crates["crates"][drop]["name"])
             elif x < card_config["Drop_Rate"]:
                 coin_drop = random.random()
                 if coin_drop < card_config["Coin_Rate"]:
@@ -278,7 +286,7 @@ async def on_message(message):
     if command == "tradeup":
         if message.author.id in players:
             if len(args) < 10:
-                await message.channel.send("Select 10 cards of the same quality to trade up! Use + `" + config["prefix"] + "tradeup <id1> <id2> ... <id10>`")
+                await message.channel.send("Select 10 cards of the same quality to trade up! Use `" + config["prefix"] + "tradeup <id1> <id2> ... <id10>`")
             else:
                 player_cards = players[message.author.id].cards
                 same_rarity = True
@@ -292,7 +300,7 @@ async def on_message(message):
                             same_rarity = False
                             card_types.append(player_cards[int(x) - 1])
                 except Exception:
-                    await message.channel.send("Select 10 cards of the same quality to trade up! Use + `" + config["prefix"] + "tradeup <id1> <id2> ... <id10>`")
+                    await message.channel.send("Select 10 cards of the same quality to trade up! Use `" + config["prefix"] + "tradeup <id1> <id2> ... <id10>`")
                 
                 if same_rarity:
                     if rarity == "EX":
@@ -397,7 +405,7 @@ async def on_message(message):
         if message.author.id in players:
             embed = discord.Embed(description="Your current balance is: " + str(players[message.author.id].currency), color=config["embed_color"])
             embed.set_author(name="Cash Monies", icon_url="https://w0.pngwave.com/png/944/747/coins-png-clip-art.png")
-            await message.channel.send(embed=embed)
+            await message.channel.send("<@" + str(message.author.id) + ">", embed=embed)
         else:
             await message.channel.send(config["join_msg"].replace("%", config["prefix"]))
     
@@ -437,7 +445,7 @@ async def on_message(message):
                         if total > 0:
                             embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use `!back` and `!next` to scroll through the list!")
                         embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
-                        await message.channel.send(embed=embed)
+                        await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
                         user = message.author
                         def check_list(message):
                             return message.author == user and (message.content == "!back" or message.content == "!next")
@@ -473,7 +481,7 @@ async def on_message(message):
                         if total > 0:
                             embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use `!back` and `!next` to scroll through the list!")
                         embed.set_author(name=other.name, icon_url=other.avatar_url)
-                        await message.channel.send(embed=embed)
+                        await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
                         user = message.author
                         def check_list(message):
                             return message.author == user and (message.content == "!back" or message.content == "!next")
@@ -509,7 +517,7 @@ async def on_message(message):
                         if total > 0:
                             embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use `!back` and `!next` to scroll through the list!")
                         embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
-                        await message.channel.send(embed=embed)
+                        await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
                         user = message.author
                         def check_list(message):
                             return message.author == user and (message.content == "!back" or message.content == "!next" or "!list" in message.content)
@@ -547,7 +555,7 @@ async def on_message(message):
                     if total > 0:
                         embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use `!back` and `!next` to scroll through the list!")
                     embed.set_author(name=message.author.name, icon_url=message.author.avatar_url)
-                    await message.channel.send(embed=embed)
+                    await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
                     user = message.author
                     def check_list(message):
                         return message.author == user and (message.content == "!back" or message.content == "!next" or "!list" in message.content)
@@ -729,7 +737,7 @@ async def on_message(message):
                                 else:
                                     await message.channel.send("You have purchased a " + cards[selected_card["card_id"]]["name"])
                                 if selected_card["user_id"] != -1:
-                                    players[selected_card["user_id"]].add_currency(int(cost))
+                                    players[selected_card["user_id"]].add_currency(int(cost)) * config["tax"]
                             else:
                                 await message.channel.send("Item has already been purchased")
                         else:
@@ -817,7 +825,12 @@ async def on_message(message):
                 elif(float(args[0]) < 0 or float(args[0]) > players[user.id].currency):
                     await message.channel.send("You don't have enough money to make this bet. You only have %s money." % players[user.id].currency)
                 else:
-                    win_amount = int(1 / float(args[1]) * float(args[0]) * 0.9) - int(args[0])
+                    roll_limit = float(args[1]) + config["bet_rig_alpha"]
+                    if roll_limit >= 1:
+                        roll_limit = 1
+                    win_amount = int((1 / roll_limit * float(args[0]) - float(args[0])) * config["bet_rig_beta"])
+                    if win_amount <= 0:
+                        win_amount = 0
                     await message.channel.send("Betting `%s` with chance `%s`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet. Potential win: `%s`" % (args[0], args[1], config["prefix"], config["prefix"], str(win_amount)))
                     try:
                         def check_list(m):
@@ -838,6 +851,30 @@ async def on_message(message):
                             await message.channel.send("Betting cancelled.")
                     except Exception:
                         await message.channel.send("There was an error with the bet.")
+    
+    
+    if command == "coinflip":
+        if len(args) < 2:
+            await message.channel.send("Not enough arguments. Usage: `!coinflip @user <amount>`")
+        elif not int(args[0][3:-1]) in players or not players[message.author.id].has_currency(float(args[1])) or not players[int(args[0][3:-1])].has_currency(float(args[1])):
+            await message.channel.send("There was an error making this coinflip.")
+        else:
+            await message.channel.send("Awaiting response...")
+            def check_list(m):
+                return m.author.id == int(args[0][3:-1]) and (m.content == '!coinflip_accept' or m.content == '!coinflip_reject')
+            response = await bot.wait_for("message",timeout = 60.0, check=check_list)
+            print(response.content)
+            if response.content == '!coinflip_accept':
+                people = [message.author.id, int(args[0][3:-1])]
+                winner = random.choice(people)
+                people.remove(winner)
+                win = config["tax"] * int(2 * float(args[1]))
+                print("Winner: %s" % players[winner].username)
+                await message.channel.send("The winner is: **%s**, winning %d." % (players[winner].username, win))
+                players[winner].add_currency(config["tax"] * int(float(args[1])))
+                players[int(people[0])].add_currency(-1 * int(float(args[1])))
+            else:
+                await message.channel.send("The coinflip has been rejected.")
 
     if command == "crates":
         player = players[message.author.id]
@@ -866,20 +903,32 @@ async def on_message(message):
             return
         
         if args[0] == 'buy':
-            #try:
-            if int(args[1]) >= 1 and int(args[1]) <= len(crates["keys"]) - 1:
-                if player.has_currency(crates["keys"][args[1]]["price"]):
-                    player.add_currency(-crates["keys"][args[1]]["price"])
-                    player.give_key(args[1])
-                    embed = discord.Embed(description=message.author.name + " bought a " + crates["keys"][args[1]]["name"], color=config["embed_color"])
-                    embed.set_author(name="Crates", icon_url="https://i.imgur.com/ZVQTsnh.png")
+            try:
+                if int(args[1]) >= 1 and int(args[1]) <= len(crates["keys"]) - 1:
+                    if player.has_currency(crates["keys"][args[1]]["price"]):
+                        player.add_currency(-crates["keys"][args[1]]["price"])
+                        player.give_key(args[1])
+                        embed = discord.Embed(description=message.author.name + " bought a " + crates["keys"][args[1]]["name"], color=config["embed_color"])
+                        embed.set_author(name="Crates", icon_url="https://i.imgur.com/ZVQTsnh.png")
+                        await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
+                    else:
+                        await message.channel.send("You don't have enough money!")
+                else:
+                    await message.channel.send("Please enter a valid id (1-" + str(len(crates["keys"]) - 1) + ")")
+            except Exception:
+                print("Something went wrong with buying keys")
+        
+        if args[0] == 'info':
+            try:
+                if int(args[1]) >= 1 and int(args[1]) <= len(crates["crates"]) - 1:
+                    embed = discord.Embed(description=crates["crates"][args[1]]["desc"], color=config["embed_color"])
+                    embed.set_author(name=crates["crates"][args[1]]["name"], icon_url="https://i.imgur.com/ZVQTsnh.png")
                     await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
                 else:
-                    await message.channel.send("You don't have enough money!")
-            else:
-                await message.channel.send("Please enter a valid id (1-" + str(len(crates["keys"]) - 1) + ")")
-            #except Exception:
-                #pass
+                    await message.channel.send("Please enter a valid id (1-" + str(len(crates["crates"]) - 1) + ")")
+            except Exception:
+                print("Something went wrong with listing crates")
+            
         
 
 

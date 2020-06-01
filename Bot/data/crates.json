@@ -4,7 +4,7 @@
         "weights": [0.8, 0.18, 0.02],
         "1": {
             "name"    : "Beta Key",
-            "price"   : 500
+            "price"   : 600
         },
         "2": {
             "name"    : "Alpha Key",
@@ -19,45 +19,80 @@
         "weights": [0.7, 0.25, 0.02, 0.01, 0.01, 0.01],
         "1" : {
             "name"    : "Common Crate",
-            "desc"    : "Rolls 3 cards, Majority Common",
+            "desc"    : "Rolls 4 cards, Majority Common",
             "key"     : "Beta Key",
             "rolls"   : 3,
-            "weights" : [0.85, 0.10, 0.03, 0.015, 0.0049, 0.0001, 0]
+            "weights" : [0.85, 0.10, 0.05, 0.015, 0.0049, 0.0001, 0]
         },
         "2" : {
+            "name"    : "Uncommon Crate",
+            "desc"    : "Rolls 2 cards, Majority Uncommon",
+            "key"     : "Beta Key",
+            "rolls"   : 2,
+            "weights" : [0.30, 0.40, 0.20, 0.050, 0.0049, 0.0001, 0]
+        },
+        "3" : {
+            "name"    : "RRRIIICCCKKKYYY Crate",
+            "desc"    : "Rolls 3 cards, Majority Uncommon",
+            "key"     : "Beta Key",
+            "rolls"   : 3,
+            "weights" : [0.45, 0.50, 0.03, 0.017, 0.0029, 0.0001, 0]
+        },
+        "4" : {
+            "name"    : "Epic or Bust Crate",
+            "desc"    : "Gives a card, but it's either a common or epic",
+            "key"     : "Beta Key",
+            "rolls"   : 1,
+            "weights" : [0.9, 0, 0, 0.1, 0, 0, 0]
+        },
+        "5" : {
             "name"    : "Big Daddy Crate",
             "desc"    : "Rolls 10 cards, Majority Common",
             "key"     : "Alpha Key",
-            "rolls"   : 3,
+            "rolls"   : 10,
             "weights" : [0.80, 0.14, 0.04, 0.015, 0.0049, 0.0001, 0]
         },
-        "3" : {
+        "6" : {
             "name"    : "High Roller Crate",
             "desc"    : "Rolls 3 better cards, Majority Rare",
             "key"     : "Alpha Key",
             "roll"    : 3,
             "weight"  : [0.17, 0.22, 0.40,  0.15,   0.057,  0.003, 0]
         },
-        "4" : {
+        "7" : {
+            "name"    : "Legendary or Bust Crate",
+            "desc"    : "Gives a card, but it's either a common or legendary",
+            "key"     : "Alpha Key",
+            "roll"    : 3,
+            "weight"  : [0.6, 0, 0,  0,   0.4,  0, 0]
+        },
+        "8" : {
             "name"    : "Prisma 2 Crate",
             "desc"    : "Rolls 5 cards with a chance to get a special item. Majority Epic",
             "key"     : "Special Key",
             "roll"    : 3,
             "weight"  : [0.10, 0.20, 0.20,  0.30,   0.19,   0.005, 0.005]
         },
-        "5" : {
+        "9" : {
             "name"    : "Administrator Crate",
             "desc"    : "Rolls 3 cards with a chance to get a special item, Majority Legendary",
             "key"     : "Special Key",
             "roll"    : 3,
             "weight"  : [0.02, 0.15, 0.23,  0.20,   0.37,   0.02, 0.01]
         },
-        "6" : {
+        "10" : {
             "name"    : "Legendary Crate",
             "desc"    : "Rolls 2 cards with a chance to get a special item, Guarenteed Legendaries or above",
             "key"     : "Special Key",
             "roll"    : 3,
             "weight"  : [0   , 0   , 0   ,  0   ,   0.95,   0.035, 0.015]
+        },
+        "11" : {
+            "name"    : "Justin or Bustin Crate",
+            "desc"    : "Gives a card with a chance to get a special item, but it's either a common or EX",
+            "key"     : "Special Key",
+            "roll"    : 3,
+            "weight"  : [0.6   , 0   , 0   ,  0   ,   0,   0.35, 0.05]
         }
     }, 
     "daily" : {
