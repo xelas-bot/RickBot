@@ -7,32 +7,32 @@ import random
 from datetime import datetime, timedelta
 
 # auth
-with open("./Bot/auth.json") as f:
+with open("auth.json") as f:
     auth = json.load(f)
     global cluster
     cluster = MongoClient(auth["mongo_key"])
     f.close()
 
 # cards
-with open("./Bot/data/cards.json") as f:
+with open("data/cards.json") as f:
     global card_data
     card_data = json.load(f)
     f.close()
 
 # rarities
-with open("./Bot/data/card_rarity.json") as f:
+with open("data/card_rarity.json") as f:
     global card_rarity
     card_rarity = json.load(f)
     f.close()
 
 # card config
-with open("./Bot/card_config.json") as f:
+with open("card_config.json") as f:
     global card_config
     card_config = json.load(f)
     f.close()
 
 # crates config
-with open("./Bot/data/crates.json") as f:
+with open("data/crates.json") as f:
     global crates_config
     crates_config = json.load(f)
     f.close()
@@ -58,6 +58,7 @@ class Player:
                     keys[x] = 0
         self.keys = keys
         self.last_time = last_time
+        self.set_db()
 
     def create_player(self):
         post = {"_id": self.id, "username": self.username, "currency": self.currency, "cards": self.cards, "crates": self.crates, "keys": self.keys, "last_time": self.last_time}
@@ -160,6 +161,17 @@ class Player:
             print("Not a card id")
         self.set_db()
     
+    def open_crate(self, crate):
+        self.get_db()
+        key = crates_config["crates"][crate]["key"]
+        if self.crates[crate] <= 0 or self.keys[key] <= 0:
+            return False
+        self.crates[crate] -= 1
+        self.keys[key] -= 1
+        self.set_db()
+        return True
+
+
     def give_key(self, key):
         self.get_db()
         self.keys[key] += 1
@@ -195,3 +207,4 @@ class Player:
             global card_rarity
             card_rarity = json.load(f)
             f.close()
+

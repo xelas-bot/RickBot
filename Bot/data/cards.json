@@ -311,5 +311,99 @@
         "desc"       : "Private Shrey, reporting in.",
         "strength"   : 1,
         "defense"    : 3
+    },
+    "33" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716721786515095602/sar_caleb.png",
+        "name"       : "Sergeant Caleb",
+        "weight"     : "150",
+        "rarity"     : "Uncommon",
+        "desc"       : "Bravo Six, Going Dark",
+        "strength"   : 20,
+        "defense"    : 6
+    },
+    "34" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716754446721482752/attack_on_TIETAN.png",
+        "name"       : "ATTACK ON TITAN",
+        "weight"     : "150",
+        "rarity"     : "Uncommon",
+        "desc"       : "'TITAN NOOO, NOOOOOOO' - Aarya Atluri",
+        "strength"   : 0,
+        "defense"    : 0
+    },
+    "35" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716759892542750830/viet_rickys.png",
+        "name"       : "Retro Ricks",
+        "weight"     : "150",
+        "rarity"     : "Uncommon",
+        "desc"       : "'Back in my day, you would have been ricked' - Ol' Ricks 1975",
+        "Boomer Vibes" : "Yes.",
+        "strength"   : 19,
+        "defense"    : 75
+    },
+    "36" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/717101120870154381/albert.gif",
+        "name"       : "Albert The Misguided",
+        "weight"     : "150",
+        "rarity"     : "Uncommon",
+        "desc"       : "The year is 2020... but my vision aint",
+        "Glasses Needed?" : "Yes.",
+        "strength"   : 5,
+        "defense"    : 40
+    },
+    "37" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716770930709233734/god_peace_adc.png",
+        "name"       : "God Peace Aaron",
+        "weight"     : "270",
+        "rarity"     : "Uncommon",
+        "desc"       : "'The weight of this power will not hold me back' - Lee Sin",
+        "Sex Appeal" : "Yes.",
+        "strength"   : 22,
+        "defense"    : 22
+    },
+    "38" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716776411586625598/FishermanKustin.png",
+        "name"       : "Fisherman Kustin",
+        "weight"     : "140",
+        "rarity"     : "Epic",
+        "desc"       : "'A true angler has respect... don't you forget that.' - Willy, Stardew Valley",
+        "Aggression" : "0",
+        "strength"   : 75,
+        "defense"    : 225
+    }, 
+    "39" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716806786975268914/LegacyChenBrothers.png",
+        "name"       : "Legacy: Chen Dynasty",
+        "weight"     : "Unknown",
+        "rarity"     : "Epic",
+        "desc"       : "*Let it be known how two brothers will cause changes for generations to come.*",
+        "Synergy Boost" : "Insane",
+        "strength"   : 30,
+        "defense"    : 350
+    },
+    "40" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/716823078834798642/SupermassiveShrey-_Copy.png",
+        "name"       : "Supermassive Shrey",
+        "weight"     : "2.188 × 10^31 kg",
+        "rarity"     : "Uncommon",
+        "desc"       : "*Its self ex-planet-ory*",
+        "Weight Class" : "Class 3Z Obese Severity Level 5000",
+        "strength"   : 0.5,
+        "defense"    : 40
+    },
+    "41" : {
+        "image"      : "https://img.pngio.com/uwu-art-print-by-saachiprime-redbubble-uwu-png-549_413.png",
+        "name"       : "UWU?",
+        "rarity"     : "Special",
+        "desc"       : "uWu",
+        "strength"   : 0,
+        "defense"    : 0
+    },
+    "42" : {
+        "image"      : "https://img.pngio.com/uwu-art-print-by-saachiprime-redbubble-uwu-png-549_413.png",
+        "name"       : "UWU?",
+        "rarity"     : "Special",
+        "desc"       : "uWu",
+        "strength"   : 0,
+        "defense"    : 0
     }
 }

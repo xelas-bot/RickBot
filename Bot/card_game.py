@@ -12,17 +12,13 @@ import numpy
 from pymongo import MongoClient
 from res.Player import Player
 import schedule
+import asyncio
 
 from datetime import datetime
 import time
 
-
-
-
-
-
 # Mongo auth
-with open("./Bot/auth.json") as f:
+with open("auth.json") as f:
     auth = json.load(f)
     global cluster
     cluster = MongoClient(auth["mongo_key"])
@@ -41,51 +37,68 @@ def update_db_players():
         player.set_db()
 
 # card config
-with open("./Bot/card_config.json", encoding='utf-8') as f:
+with open("card_config.json", encoding='utf-8') as f:
     global card_config
     card_config = json.load(f)
     f.close()
 
 # card data
-with open("./Bot/data/cards.json", encoding='utf-8') as f:
+with open("data/cards.json", encoding='utf-8') as f:
     global cards
     cards = json.load(f)
     f.close()
 
 # help
-with open("./Bot/help.json") as f:
+with open("help.json") as f:
     global help_msgs
     help_msgs = json.load(f)
     f.close()
 
 # config options
-with open('./Bot/config.json') as f:
+with open('config.json') as f:
     global config
     config = json.load(f)
     f.close()
 
 # crates
-with open('./Bot/data/crates.json') as f:
+with open('data/crates.json') as f:
     global crates
     crates = json.load(f)
     f.close()
 
+# rarities
+with open("data/card_rarity.json") as f:
+    global card_rarity
+    card_rarity = json.load(f)
+    f.close()
+
+# collections
+with open("card_collections.json") as f:
+    global collections_config
+    collections_config = json.load(f)
+    f.close()
+
+
 def update_things():
-    with open("./Bot/data/cards.json", encoding='utf-8') as f:
+    with open("data/cards.json", encoding='utf-8') as f:
         global cards
         cards = json.load(f)
         f.close()
-    with open("./Bot/card_config.json", encoding='utf-8') as f:
+    with open("card_config.json", encoding='utf-8') as f:
         global card_config
         card_config = json.load(f)
         f.close()
-    with open("./Bot/help.json") as f:
+    with open("help.json") as f:
         global help_msgs
         help_msgs = json.load(f)
         f.close()
-    with open('./Bot/config.json') as f:
+    with open('config.json') as f:
         global config
         config = json.load(f)
+        f.close()
+    with open("data/card_rarity.json") as f:
+        global card_rarity
+        card_rarity = json.load(f)
         f.close()
 
 
@@ -95,6 +108,7 @@ def update_players():
         player = Player(id=x["_id"], username=x["username"], currency=x["currency"], cards=x["cards"], crates=x["crates"], keys=x["keys"], last_time=x["last_time"])
         players[x["_id"]] = player
     return players
+
 ##Market Commands
 def update_market():
     market = []
@@ -115,7 +129,13 @@ def remove_listing(listing_id, verify):
         return True
     else:
         return False
-    
+
+def get_random_rarity(rarity, exclude=[]):
+    drops = [x for x in card_rarity[rarity] if not x in exclude]
+    if len(drops) <= 0:
+        drops = card_rarity[rarity]
+    drop = random.choice(drops)
+    return drop
 
 async def show_card(message, card_id, title, show_desc=True, footer=None, mention=False):
     embed = discord.Embed(title=cards[card_id]["name"],description="*" + cards[card_id]["desc"] + "*", color=card_config[cards[card_id]["rarity"]]["color"])
@@ -152,7 +172,7 @@ async def on_ready():
     print('Bot is running')
 
 def check_rarity(card):
-    with open('./Bot/data/card_rarity.json') as f:
+    with open('data/card_rarity.json') as f:
         card_rarity = json.load(f)
         f.close()
         for x in card_rarity:
@@ -182,21 +202,11 @@ async def on_message(message):
     try:
         if message.content[0] != config["prefix"] and message.author.id in players:
             x = random.random()
-            if x < card_config["Special_Rate"]:
-                special_drop = random.random()
-                if special_drop < card_config["Special_Drop"]["Key"]:
-                    drops = [str(x + 1) for x in range(len(crates["keys"]["weights"]))]
-                    drop = numpy.random.choice(drops, 1, p=crates["keys"]["weights"])[0]
-                    players[message.author.id].give_key(drop)
-                    print(message.author.name + " got a " + crates["keys"][drop]["name"] + " worth $" + str(crates["keys"][drop]["price"]))
-                else:
-                    drops = [str(x + 1) for x in range(len(crates["crates"]["weights"]))]
-                    drop = numpy.random.choice(drops, 1, p=crates["crates"]["weights"])[0]
-                    players[message.author.id].give_crate(drop)
-                    print(message.author.name + " got a " + crates["crates"][drop]["name"])
-            elif x < card_config["Drop_Rate"]:
-                coin_drop = random.random()
-                if coin_drop < card_config["Coin_Rate"]:
+            if(card_config['event']):
+                x = x / 2
+            if x < card_config["Drop_Rate"]:
+                choice_drop = random.random()
+                if choice_drop < card_config["Coin_Rate"]:
                     spawn = random.random()
                     drop = 0
                     if spawn >= card_config["EX"]["drop"]:
@@ -214,6 +224,18 @@ async def on_message(message):
                     embed = discord.Embed(description=message.author.name + " got " + str(drop) + " cash monies", color=config["embed_color"])
                     embed.set_author(name="Cash Monies", icon_url="https://w0.pngwave.com/png/944/747/coins-png-clip-art.png")
                     await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
+                elif choice_drop < "Special_Rate":
+                    special_drop = random.random()
+                    if special_drop < card_config["Special_Drop"]["Key"]:
+                        drops = [str(x + 1) for x in range(len(crates["keys"]["weights"]))]
+                        drop = numpy.random.choice(drops, 1, p=crates["keys"]["weights"])[0]
+                        players[message.author.id].give_key(drop)
+                        print(message.author.name + " got a " + crates["keys"][drop]["name"] + " worth $" + str(crates["keys"][drop]["price"]))
+                    else:
+                        drops = [str(x + 1) for x in range(len(crates["crates"]["weights"]))]
+                        drop = numpy.random.choice(drops, 1, p=crates["crates"]["weights"])[0]
+                        players[message.author.id].give_crate(drop)
+                        print(message.author.name + " got a " + crates["crates"][drop]["name"])
                 else:
                     spawn = random.random()
                     drop = ''
@@ -230,6 +252,7 @@ async def on_message(message):
                     else:
                         drop = players[message.author.id].spawn("Common", currency=True)
                     await show_card(message, drop, message.author.name + " caught a:", False, None, True)
+                
             return
     except Exception:
         return
@@ -271,12 +294,13 @@ async def on_message(message):
             "Rare"     : [],
             "Epic"     : [],
             "Legendary": [],
-            "EX"       : []
+            "EX"       : [],
+            "Special"  : []
         }
         for x in cards:
             rarities[cards[str(x)]["rarity"]].append(str(x))
         
-        with open("./Bot/data/card_rarity.json", "w") as f:
+        with open("data/card_rarity.json", "w") as f:
             json.dump(rarities, f, ensure_ascii=False)
             f.close()
         
@@ -360,7 +384,7 @@ async def on_message(message):
                             same_rarity = False
                         card_types.append(player_cards[int(x) - 1])
                 except Exception:
-                    await message.channel.send("Select 3 cards of the same quality to reroll! Use `" + config["prefix"] + "reroll <id1> <id2> <id3>`")
+                   await message.channel.send("Select 3 cards of the same quality to reroll! Use `" + config["prefix"] + "reroll <id1> <id2> <id3>`")
                 if same_rarity:
                     desc = ''
                     for x in args[:3]:
@@ -391,6 +415,7 @@ async def on_message(message):
                                 drop = players[user.id].spawn("Legendary", exclude=card_types)
                             elif rarity == "EX":
                                 drop = players[user.id].spawn("EX", exclude=card_types)
+                            print(drop)
                             await show_card(message, drop, message.author.name + " rerolled a:", False, None, True)
                         else:
                             await message.channel.send("Do only one reroll at a time! First reroll is cancelled.")
@@ -632,7 +657,7 @@ async def on_message(message):
             try:
                 players[message.author.id].set_currency(int(args[0]))
             except Exception:
-                await message.channel.send("Hello administrator. I don't want to expose your low iq, but the command is [" + config["prefix"] + "cash_monies money] to set your money.")
+                await message.channel.send("Hello administrator. I don't want to expose your low iq, but the command is `" + config["prefix"] + "cash_monies <money>` to set your money.")
 
     if command == "sell":
         if message.author.id in players:
@@ -825,28 +850,54 @@ async def on_message(message):
                 elif(float(args[0]) < 0 or float(args[0]) > players[user.id].currency):
                     await message.channel.send("You don't have enough money to make this bet. You only have %s money." % players[user.id].currency)
                 else:
-                    roll_limit = float(args[1]) + config["bet_rig_alpha"]
-                    if roll_limit >= 1:
-                        roll_limit = 1
-                    win_amount = int((1 / roll_limit * float(args[0]) - float(args[0])) * config["bet_rig_beta"])
+                    if '--over' in message.content:
+                        roll_limit = (1-float(args[1])) + config["bet_rig_alpha"]
+                        if roll_limit >= 1:
+                            roll_limit = 1
+                        win_amount = int((1 / roll_limit * float(args[0]) - float(args[0])) * config["bet_rig_beta"])
+                    else:
+                        roll_limit = float(args[1]) + config["bet_rig_alpha"]
+                        if roll_limit >= 1:
+                            roll_limit = 1
+                        win_amount = int((1 / roll_limit * float(args[0]) - float(args[0])) * config["bet_rig_beta"])
                     if win_amount <= 0:
                         win_amount = 0
-                    await message.channel.send("Betting `%s` with chance `%s`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet. Potential win: `%s`" % (args[0], args[1], config["prefix"], config["prefix"], str(win_amount)))
+                    await message.channel.send(
+                        "Betting `%s` with chance `%s`. Type `%sbet_confirm` to confirm your bet. Type `%sbet_cancel` to cancel your bet. Potential win: `%s`" % (
+                            args[0],
+                            args[1] if not '--over' in message.content else str(round(1.0-(float(args[1])),2)),
+                            config["prefix"],
+                            config["prefix"],
+                            str(win_amount)
+                        )
+                    )
                     try:
                         def check_list(m):
                                 return m.author == user and (m.content == '!bet_confirm' or m.content == '!bet_cancel')
                         response = await bot.wait_for("message",timeout = 60.0, check=check_list)
                         if(response.content == "!bet_confirm"):
-                            result = random.random()
-                            print('Chance: ' + args[1] + '\tResult: ' + str(result))
-                            if(result <= float(args[1])):
-                                win = players[user.id].add_currency(win_amount)
-                                embed = discord.Embed(title="You WIN!", description="You won " + str(win) + "!", color=0x00ff00)
-                                await message.channel.send(embed=embed)
+                            if '--over' in message.content:
+                                result = random.random()
+                                print('Chance: ' + args[1] + '\tResult: ' + str(result))
+                                if(result >= float(args[1])):
+                                    win = players[user.id].add_currency(win_amount)
+                                    embed = discord.Embed(title="You WIN!", description="You won " + str(win) + "!", color=0x00ff00)
+                                    await message.channel.send(embed=embed)
+                                else:
+                                    embed = discord.Embed(title="You LOSE.", description="You lost " + str(args[0]) + "!", color=0xff0000)
+                                    players[user.id].add_currency(-1 * float(args[0]))
+                                    await message.channel.send(embed=embed)
                             else:
-                                embed = discord.Embed(title="You LOSE.", description="You lost " + str(args[0]) + "!", color=0xff0000)
-                                players[user.id].add_currency(-1 * float(args[0]))
-                                await message.channel.send(embed=embed)
+                                result = random.random()
+                                print('Chance: ' + args[1] + '\tResult: ' + str(result))
+                                if(result <= float(args[1])):
+                                    win = players[user.id].add_currency(win_amount)
+                                    embed = discord.Embed(title="You WIN!", description="You won " + str(win) + "!", color=0x00ff00)
+                                    await message.channel.send(embed=embed)
+                                else:
+                                    embed = discord.Embed(title="You LOSE.", description="You lost " + str(args[0]) + "!", color=0xff0000)
+                                    players[user.id].add_currency(-1 * float(args[0]))
+                                    await message.channel.send(embed=embed)
                         else:
                             await message.channel.send("Betting cancelled.")
                     except Exception:
@@ -886,9 +937,9 @@ async def on_message(message):
             for x in crates["crates"]:
                 if x != "weights":
                     if x in player_crates:
-                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " (" + crates["crates"][x]["key"] + ") x" + str(player_crates[x]) + '\n'
+                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " (" + crates["keys"][crates["crates"][x]["key"]]["name"] + ") x" + str(player_crates[x]) + '\n'
                     else:
-                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " (" + crates["crates"][x]["key"] + ") x0\n"
+                        desc += 'id: ' + x + ' | ' + crates["crates"][x]["name"] + " (" + crates["keys"][crates["crates"][x]["key"]]["name"] + ") x0\n"
             desc += '\n**Keys:**\n'
             for x in crates["keys"]:
                 if x != "weights":
@@ -922,17 +973,117 @@ async def on_message(message):
             try:
                 if int(args[1]) >= 1 and int(args[1]) <= len(crates["crates"]) - 1:
                     embed = discord.Embed(description=crates["crates"][args[1]]["desc"], color=config["embed_color"])
-                    embed.set_author(name=crates["crates"][args[1]]["name"], icon_url="https://i.imgur.com/ZVQTsnh.png")
+                    embed.set_author(name=crates["crates"][args[1]]["name"] + " (" + crates["keys"][crates["crates"][args[1]]["key"]]["name"] + ")", icon_url="https://i.imgur.com/ZVQTsnh.png")
                     await message.channel.send("<@" + str(message.author.id) + ">",embed=embed)
                 else:
                     await message.channel.send("Please enter a valid id (1-" + str(len(crates["crates"]) - 1) + ")")
             except Exception:
                 print("Something went wrong with listing crates")
+        
+        if args[0] == 'open':
+            if int(args[1]) >= 1 and int(args[1]) <= len(crates["crates"]) - 1:
+                key = crates["keys"][crates["crates"][args[1]]["key"]]
+                crate = crates["crates"][args[1]]
+                if player_crates[args[1]] >= 1:
+                    if player_keys[crates["crates"][args[1]]["key"]] >= 1:
+                        if not player.open_crate(args[1]):
+                            await message.channel.send("You are missing a crate or key")
+                            return
+                        print(message.author.name + " is opening a " + crate["name"] + " with a " + key["name"])
+                        if crate["type"] == "Rarity":
+                            num_rolls = crate["rolls"]
+                            for x in range(num_rolls):
+                                t = 0
+                                next_t = 10
+                                card_id = get_random_rarity(numpy.random.choice(crates["rarities"], 1, p=crate["weights"])[0])
+                                embed = discord.Embed(title=cards[card_id]["name"],description="*" + cards[card_id]["desc"] + "*", color=card_config[cards[card_id]["rarity"]]["color"])
+                                if message.channel.guild.icon_url == None:
+                                    embed.set_author(name=message.author.name + " is rolling:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
+                                else:
+                                    embed.set_author(name=message.author.name + " is rolling:", icon_url=message.channel.guild.icon_url)
+                                embed.set_thumbnail(url=message.author.avatar_url)
+                                embed.set_image(url=cards[card_id]["image"])
+                                roll_message = await message.channel.send(embed=embed)
+                                await asyncio.sleep(1)
+                                while next_t <= 100:
+                                    t += 2 * math.sqrt(110 - next_t) * random.random() + 3
+                                    if t > next_t:
+                                        next_t += 10
+                                        card_id = get_random_rarity(numpy.random.choice(crates["rarities"], 1, p=crate["weights"])[0])
+                                        embed = discord.Embed(title=cards[card_id]["name"],description="*" + cards[card_id]["desc"] + "*", color=card_config[cards[card_id]["rarity"]]["color"])
+                                        if message.channel.guild.icon_url == None:
+                                            embed.set_author(name=message.author.name + " is rolling:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
+                                        else:
+                                            embed.set_author(name=message.author.name + " is rolling:", icon_url=message.channel.guild.icon_url)
+                                        embed.set_thumbnail(url=message.author.avatar_url)
+                                        embed.set_image(url=cards[card_id]["image"])
+                                        await roll_message.edit(embed=embed)
+                                    await asyncio.sleep(0.3)
+                                card_id = get_random_rarity(numpy.random.choice(crates["rarities"], 1, p=crate["weights"])[0])
+                                embed = discord.Embed(title=cards[card_id]["name"],description="*" + cards[card_id]["desc"] + "*", color=card_config[cards[card_id]["rarity"]]["color"])
+                                if message.channel.guild.icon_url == None:
+                                    embed.set_author(name=message.author.name + " got a:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
+                                else:
+                                    embed.set_author(name=message.author.name + " got a:", icon_url=message.channel.guild.icon_url)
+                                embed.set_thumbnail(url=message.author.avatar_url)
+                                embed.set_image(url=cards[card_id]["image"])
+                                await roll_message.edit(content="<@" + str(message.author.id) + ">",embed=embed)
+                                player.give(card_id)
+                        elif crate["type"] == "Collection":
+                            num_rolls = crate["rolls"]
+                            for x in range(num_rolls):
+                                t = 0
+                                next_t = 10
+                                card_id = numpy.random.choice(collections_config[crate["collection"]], 1, p=crate["weights"])[0]
+                                embed = discord.Embed(title=cards[card_id]["name"],description="*" + cards[card_id]["desc"] + "*", color=card_config[cards[card_id]["rarity"]]["color"])
+                                if message.channel.guild.icon_url == None:
+                                    embed.set_author(name=message.author.name + " is rolling:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
+                                else:
+                                    embed.set_author(name=message.author.name + " is rolling:", icon_url=message.channel.guild.icon_url)
+                                embed.set_thumbnail(url=message.author.avatar_url)
+                                embed.set_image(url=cards[card_id]["image"])
+                                roll_message = await message.channel.send(embed=embed)
+                                await asyncio.sleep(1)
+                                while next_t <= 100:
+                                    t += 2 * math.sqrt(110 - next_t) * random.random() + 3
+                                    if t > next_t:
+                                        next_t += 10
+                                        card_id = numpy.random.choice(collections_config[crate["collection"]], 1, p=crate["weights"])[0]
+                                        embed = discord.Embed(title=cards[card_id]["name"],description="*" + cards[card_id]["desc"] + "*", color=card_config[cards[card_id]["rarity"]]["color"])
+                                        if message.channel.guild.icon_url == None:
+                                            embed.set_author(name=message.author.name + " is rolling:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
+                                        else:
+                                            embed.set_author(name=message.author.name + " is rolling:", icon_url=message.channel.guild.icon_url)
+                                        embed.set_thumbnail(url=message.author.avatar_url)
+                                        embed.set_image(url=cards[card_id]["image"])
+                                        await roll_message.edit(embed=embed)
+                                    await asyncio.sleep(0.3)
+                                card_id = numpy.random.choice(collections_config[crate["collection"]], 1, p=crate["weights"])[0]
+                                embed = discord.Embed(title=cards[card_id]["name"],description="*" + cards[card_id]["desc"] + "*", color=card_config[cards[card_id]["rarity"]]["color"])
+                                if message.channel.guild.icon_url == None:
+                                    embed.set_author(name=message.author.name + " got a:", icon_url="https://cdn.discordapp.com/embed/avatars/0.png")
+                                else:
+                                    embed.set_author(name=message.author.name + " got a:", icon_url=message.channel.guild.icon_url)
+                                embed.set_thumbnail(url=message.author.avatar_url)
+                                embed.set_image(url=cards[card_id]["image"])
+                                await roll_message.edit(content="<@" + str(message.author.id) + ">",embed=embed)
+                                player.give(card_id)
+                    else:
+                        await message.channel.send("You don't have a " + key["name"])
+                else:
+                    await message.channel.send("You don't have a " + crate["name"])
+            else:
+                await message.channel.send("Please enter a valid id (1-" + str(len(crates["crates"]) - 1) + ")")
+        
+        if args[0] == 'give':
+            if message.author.id in config["administrators"]:
+                players[message.author.id].give_crate(args[1])
+                print("gave " + message.author.name + " a " + crates["crates"][args[1]]["name"])
             
         
 
 
-with open("./Bot/auth.json") as f:
+with open("auth.json") as f:
     auth = json.load(f)
     bot.run(auth["token"])
     f.close()

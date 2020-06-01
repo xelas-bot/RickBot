@@ -1,9 +1,11 @@
 {
+    "event"          : true,
+    "enabled_drops"  : ["cards","coins","special"],
     "Drop_Rate"   : 0.05,
     "Sell_Rate"   : 0.8,
-    "Coin_Rate"   : 0.35,
+    "Coin_Rate"   : 0.20,
     "Coin_Dev"    : 0.2, 
-    "Special_Rate": 0,
+    "Special_Rate": 0.05,
     "Special_Drop": {
         "Key"     : 0.2,
         "Crate"   : 1
