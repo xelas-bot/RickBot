@@ -90,13 +90,22 @@
             "weights"   : [0.6   , 0   , 0   ,  0   ,   0,   0.35, 0.05]
         },
         "10" : {
-            "name"      : "Military Set",
+            "name"      : "Military Crate",
             "desc"      : "A random card from the Military Collection",
             "key"       : "2",
             "rolls"     : 1,
             "type"      : "Collection",
             "weights"   : [0.05, 0.15, 0.3, 0.3, 0.2],
             "collection": "Military"
+        },
+        "11" : {
+            "name"      : "Obese Crate",
+            "desc"      : "A random card from the Obese Collection",
+            "key"       : "2",
+            "rolls"     : 1,
+            "type"      : "Collection",
+            "weights"   : [0.09, 0.045, 0.045, 0.09, 0.009, 0.01, 0.01, 0.035, 0.01, 0.035, 0.09, 0.09, 0.09, 0.09, 0.09, 0.09],
+            "collection": "Obese"
         }
     },
     "rarities": ["Common", "Uncommon", "Rare", "Epic", "Legendary", "EX", "Special"],
