@@ -6,6 +6,5 @@
     "embed_color"    : 4605510,
     "bet_rig_alpha"  : 0.05,
     "bet_rig_beta"   : 0.8,
-    "tax"            : 0.9,
-    "file_path"
+    "tax"            : 0.9
 }
