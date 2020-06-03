@@ -36,8 +36,6 @@ def update_db_players():
         player = Player(id=x["_id"], username=x["username"], currency=x["currency"], cards=x["cards"], last_time=x["last_time"])
         player.set_db()
 
-update_db_players()
-
 # card config
 with open("./Bot/card_config.json", encoding='utf-8') as f:
     global card_config
