@@ -1083,7 +1083,7 @@ async def on_message(message):
         
 
 
-with open("auth.json") as f:
+with open("./Bot/auth.json") as f:
     auth = json.load(f)
     bot.run(auth["token"])
     f.close()
