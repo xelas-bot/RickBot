@@ -7,32 +7,32 @@ import random
 from datetime import datetime, timedelta
 
 # auth
-with open("auth.json") as f:
+with open("./Bot/auth.json") as f:
     auth = json.load(f)
     global cluster
     cluster = MongoClient(auth["mongo_key"])
     f.close()
 
 # cards
-with open("data/cards.json") as f:
+with open("./Bot/data/cards.json") as f:
     global card_data
     card_data = json.load(f)
     f.close()
 
 # rarities
-with open("data/card_rarity.json") as f:
+with open("./Bot/data/card_rarity.json") as f:
     global card_rarity
     card_rarity = json.load(f)
     f.close()
 
 # card config
-with open("card_config.json") as f:
+with open("./Bot/card_config.json") as f:
     global card_config
     card_config = json.load(f)
     f.close()
 
 # crates config
-with open("data/crates.json") as f:
+with open("./Bot/data/crates.json") as f:
     global crates_config
     crates_config = json.load(f)
     f.close()
@@ -203,7 +203,7 @@ class Player:
     
     @staticmethod
     def update_rarities():
-        with open("data/card_rarity.json") as f:
+        with open("./Bot/data/card_rarity.json") as f:
             global card_rarity
             card_rarity = json.load(f)
             f.close()

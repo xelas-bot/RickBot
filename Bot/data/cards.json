@@ -391,19 +391,86 @@
         "defense"    : 40
     },
     "41" : {
-        "image"      : "https://img.pngio.com/uwu-art-print-by-saachiprime-redbubble-uwu-png-549_413.png",
-        "name"       : "UWU?",
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/717202795547197450/CollectibleRoadrunnerMiata.png",
+        "name"       : "Roadrunner Miata",
         "rarity"     : "Special",
-        "desc"       : "uWu",
-        "strength"   : 0,
+        "desc"       : "Broom broom get out me car.",
+        "speed"      : 5,
+        "owner"      : "Ricky",
+        "capacity"   : "2 MAX",
+        "armor"      : 2,
         "defense"    : 0
     },
     "42" : {
-        "image"      : "https://img.pngio.com/uwu-art-print-by-saachiprime-redbubble-uwu-png-549_413.png",
-        "name"       : "UWU?",
-        "rarity"     : "Special",
-        "desc"       : "uWu",
-        "strength"   : 0,
-        "defense"    : 0
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/717215662103330867/KingDLZ.png",
+        "name"       : "King DLZ",
+        "rarity"     : "Rare",
+        "desc"       : "I am DLZ. DLZ is me.",
+        "weight"     : 125,
+        "years as ruler" : 7,
+        "strength"   : 18,
+        "defense"    : 50
+    },
+    "43" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/717365895915241492/CollectibleEdition.png",
+        "name"       : "Barefoot Bert",
+        "rarity"     : "Uncommon",
+        "desc"       : "Roams the world in search for Pureboosts™.",
+        "weight"     : 500,
+        "net gains"  : "-$40",
+        "strength"   : 3,
+        "defense"    : 18
+    },
+    "44" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/717399978389274664/RedCarpetGeorgeFinal.png",
+        "name"       : "Red Carpet George",
+        "rarity"     : "Uncommon",
+        "desc"       : "High fashion like Goyard, G-Wagen or the Rover?, I put some ice on you 'cause you got a cold heart",
+        "weight"     : 120,
+        "ice"        : 4,
+        "drip"       : 80,
+        "strength"   : 4,
+        "defense"    : 17
+    },
+    "45" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/717417461762490428/CollectibleEdition.png",
+        "name"       : "Supercuts Shrey",
+        "rarity"     : "Common",
+        "desc"       : "If it'll go back, time will tell, but always tip your barber well.",
+        "weight"     : 5575,
+        "bruh meter" : 100,
+        "hairline"   : "faded",
+        "strength"   : 2,
+        "defense"    : 25
+    },
+    "46" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/717457177232670790/CollectibleEdition.png",
+        "name"       : "Marsh-all Ricky",
+        "rarity"     : "Legendary",
+        "desc"       : "The drip is too hard.",
+        "weight"     : 120,
+        "commanding power" : 1000,
+        "strength"   : 2,
+        "defense"    : 25
+    },
+    "47" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/717802413578387486/FinalHungryKennethCollectible.png",
+        "name"       : "Hungry Kenneth",
+        "rarity"     : "Common",
+        "desc"       : "Refueling for the SAT.",
+        "weight"     : 350,
+        "hunger" : 100,
+        "strength"   : 2,
+        "defense"    : 3
+    },
+    "48" : {
+        "image"      : "https://cdn.discordapp.com/attachments/706686059605393498/717812956150366209/CollectibleEdition.png",
+        "name"       : "Sonic Worker Shrey",
+        "rarity"     : "Rare",
+        "desc"       : "$3.50 an hour.",
+        "weight"     : 6750,
+        "Months Worked" : 6,
+        "strength"   : 10,
+        "defense"    : 60
     }
 }
