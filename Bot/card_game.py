@@ -18,7 +18,7 @@ from datetime import datetime
 import time
 
 # Mongo auth
-with open("auth.json") as f:
+with open("./Bot/auth.json") as f:
     auth = json.load(f)
     global cluster
     cluster = MongoClient(auth["mongo_key"])
@@ -37,66 +37,66 @@ def update_db_players():
         player.set_db()
 
 # card config
-with open("card_config.json", encoding='utf-8') as f:
+with open("./Bot/card_config.json", encoding='utf-8') as f:
     global card_config
     card_config = json.load(f)
     f.close()
 
 # card data
-with open("data/cards.json", encoding='utf-8') as f:
+with open("./Bot/data/cards.json", encoding='utf-8') as f:
     global cards
     cards = json.load(f)
     f.close()
 
 # help
-with open("help.json") as f:
+with open("./Bot/help.json") as f:
     global help_msgs
     help_msgs = json.load(f)
     f.close()
 
 # config options
-with open('config.json') as f:
+with open('./Bot/config.json') as f:
     global config
     config = json.load(f)
     f.close()
 
 # crates
-with open('data/crates.json') as f:
+with open('./Bot/data/crates.json') as f:
     global crates
     crates = json.load(f)
     f.close()
 
 # rarities
-with open("data/card_rarity.json") as f:
+with open("./Bot/data/card_rarity.json") as f:
     global card_rarity
     card_rarity = json.load(f)
     f.close()
 
 # collections
-with open("card_collections.json") as f:
+with open("./Bot/card_collections.json") as f:
     global collections_config
     collections_config = json.load(f)
     f.close()
 
 
 def update_things():
-    with open("data/cards.json", encoding='utf-8') as f:
+    with open("./Bot/data/cards.json", encoding='utf-8') as f:
         global cards
         cards = json.load(f)
         f.close()
-    with open("card_config.json", encoding='utf-8') as f:
+    with open("./Bot/card_config.json", encoding='utf-8') as f:
         global card_config
         card_config = json.load(f)
         f.close()
-    with open("help.json") as f:
+    with open("./Bot/help.json") as f:
         global help_msgs
         help_msgs = json.load(f)
         f.close()
-    with open('config.json') as f:
+    with open('./Bot/config.json') as f:
         global config
         config = json.load(f)
         f.close()
-    with open("data/card_rarity.json") as f:
+    with open("./Bot/data/card_rarity.json") as f:
         global card_rarity
         card_rarity = json.load(f)
         f.close()
