@@ -18,7 +18,7 @@ import time
 print("Market bot on!")
 
 # auth
-with open("auth.json") as f:
+with open("./Bot/auth.json") as f:
     auth = json.load(f)
     global cluster
     cluster = MongoClient(auth["mongo_key"])
@@ -30,7 +30,7 @@ db_players = db["players"]
 db_market = db["market"]
 
 # market_bot options
-with open('data/market_bot.json') as f:
+with open('./Bot/data/market_bot.json') as f:
     global market_bot
     market_bot = json.load(f)
     f.close()
