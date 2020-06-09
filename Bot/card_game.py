@@ -60,6 +60,8 @@ with open('./Bot/config.json') as f:
     config = json.load(f)
     f.close()
 
+#302515756976046081
+
 # crates
 with open('./Bot/data/crates.json') as f:
     global crates
@@ -113,7 +115,7 @@ def update_players():
 def update_market():
     market = []
     for x in db_market.find():
-        listing = {"user_id": x["user_id"], "card_price": x["card_price"], "card_id": x["card_id"]}
+        listing = {"user_id": x["user_id"], "card_price": x["card_price"], "card_id": x["card_id"], "type": x["type"]}
         market.append(listing)
     return market
 
@@ -181,6 +183,31 @@ def check_rarity(card):
         print("Update rarities dummy")
     return "Error"
 
+
+with open('./Bot/data/market_bot.json') as f:
+    global market_bot
+    market_bot = json.load(f)
+    f.close()
+
+
+def create_market_listing():
+    total = 0
+    for x in market_bot:
+        total += x["weight"]
+    
+    weights = []
+    for x in market_bot:
+        weights.append(x["weight"] / total)
+
+    choice = numpy.random.choice(market_bot, 1, p=weights)[0]
+    price = random.randrange(choice["price_lower"], choice["price_upper"])
+    listing = {"user_id": -1, "card_price": price, "card_id": choice["card_id"], "type": choice["type"]}
+    db_market.insert_one(listing)
+    if choice["type"] == "card":
+        print("Market added a " + cards[choice["card_id"]]["name"] + " to the market!")
+    else:
+        print("Market added a " + crates["crates"][choice["card_id"]]["name"] + " to the market!")
+
 # bot message
 @bot.event
 async def on_message(message):
@@ -197,6 +224,12 @@ async def on_message(message):
 
     # Load players
     players = update_players()
+
+    #update market
+    schedule.run_pending()
+
+    if random.random() <= card_config["Market_Drop"]:
+        create_market_listing()
     
     # only commands
     try:
@@ -313,6 +346,29 @@ async def on_message(message):
             f.close()
         
         Player.update_rarities()
+
+        market_drops = []
+        weights = {}
+        for x in card_config:
+            if x in ["Common", "Uncommon", "Rare", "Epic", "Legendary", "EX", "Special"]:
+                weights[x] = card_config[x]["weight"]
+
+        for x in cards:
+            rarity = cards[x]["rarity"]
+            weight = weights[rarity]
+            market_drops.append(
+                {"card_id": x , "price_lower": card_config[rarity]["currency"] * (1 - card_config["Card_Dev"]), "price_upper": card_config[rarity]["currency"] * (1 + card_config["Card_Dev"]), "weight": weight, "type": "card"}
+                )
+        for x in crates["crates"]:
+            if x != "weights":
+                market_drops.append(
+                    {"card_id": x, "price_lower": crates["crates"][x]["price"] * (1 - card_config["Card_Dev"]), "price_upper": crates["crates"][x]["price"] * (1 + card_config["Card_Dev"]), "weight": crates["crates"]["weights"][int(x) - 1], "type": "crate"}
+                )
+
+        with open("./Bot/data/market_bot.json", "w") as f:
+            json.dump(market_drops, f, ensure_ascii=False)
+            f.close()
+
         await message.channel.send('Cards have been updated!')
 
     if command == "tradeup":
@@ -327,10 +383,15 @@ async def on_message(message):
                 try:
                     rarity = check_rarity(player_cards[int(args[0]) - 1])
                     card_types = []
+                    card_ids = []
                     for x in args[:10]:
+                        if x in card_ids:
+                            await message.channel.send("Cannot select the same id to tradeup!")
+                            return False
                         if check_rarity(player_cards[int(x) - 1]) != rarity:
                             same_rarity = False
-                            card_types.append(player_cards[int(x) - 1])
+                        card_types.append(player_cards[int(x) - 1])
+                        card_ids.append(x)
                 except Exception:
                     await message.channel.send("Select 10 cards of the same quality to trade up! Use `" + config["prefix"] + "tradeup <id1> <id2> ... <id10>`")
                 
@@ -387,10 +448,14 @@ async def on_message(message):
                 card_types = []
                 try:
                     rarity = check_rarity(player_cards[int(args[0]) - 1])
+                    card_ids = []
                     for x in args[:3]:
+                        if x in card_ids:
+                            await message.channel.send("Cannot select the same id to reroll!")
                         if check_rarity(player_cards[int(x) - 1]) != rarity:
                             same_rarity = False
                         card_types.append(player_cards[int(x) - 1])
+                        card_ids.append(x)
                 except Exception:
                    await message.channel.send("Select 3 cards of the same quality to reroll! Use `" + config["prefix"] + "reroll <id1> <id2> <id3>`")
                 if same_rarity:
@@ -726,7 +791,10 @@ async def on_message(message):
                             except Exception:
                                 print("Someone has an invalid id")
                                 pass
-                            desc += '**' + cards[x["card_id"]]["name"] + '** | ' + cards[x["card_id"]]["rarity"] + " | Seller: " + seller_name + " | id: "  + str(i + 1 + page * page_len) + " | Price: " + str(x["card_price"]) + " " + '\n'
+                            if x["type"] == "card":
+                                desc += '**' + cards[x["card_id"]]["name"] + '** | ' + cards[x["card_id"]]["rarity"] + " | Seller: " + seller_name + " | id: "  + str(i + 1 + page * page_len) + " | Price: " + str(x["card_price"]) + " " + '\n'
+                            else:
+                                desc += '**' + crates["crates"][x["card_id"]]["name"] + '** | Crate | Seller: ' + seller_name + " | id: "  + str(i + 1 + page * page_len) + " | Price: " + str(x["card_price"]) + " " + '\n'
                     embed=discord.Embed(description=desc)
                     if total > 0:
                         embed.set_footer(text="You are on page " + str(page + 1) + "/" + str((total - 1) // page_len + 1) + ". Use `!market back` and `!market next` to scroll through the list!")
@@ -758,21 +826,33 @@ async def on_message(message):
                     if int(args[1]) >= 1:
                         selected_card = card_list[int(args[1]) - 1]
                         cost = selected_card["card_price"]
-                        print(cost)
-                        print(selected_card)
+                        print(message.author.name + " bought from the market!")
                         if message.author.id == selected_card["user_id"] or players[message.author.id].has_currency(currency=cost):
-                            ##remove listing
-                            if remove_listing(args[1], selected_card):
-                                players[message.author.id].add_currency(-int(cost))
-                                players[message.author.id].give(selected_card["card_id"])
-                                if message.author.id == selected_card["user_id"]:
-                                    await message.channel.send("You have removed your " + cards[selected_card["card_id"]]["name"] + " from the market")
+                            if selected_card["type"] == "card":
+                                ##remove listing
+                                if remove_listing(args[1], selected_card):
+                                    players[message.author.id].add_currency(-int(cost))
+                                    players[message.author.id].give(selected_card["card_id"])
+                                    if message.author.id == selected_card["user_id"]:
+                                        await message.channel.send("You have removed your " + cards[selected_card["card_id"]]["name"] + " from the market")
+                                    else:
+                                        await message.channel.send("You have purchased a " + cards[selected_card["card_id"]]["name"])
+                                    if selected_card["user_id"] != -1:
+                                        players[selected_card["user_id"]].add_currency(int(cost)) * config["tax"]
                                 else:
-                                    await message.channel.send("You have purchased a " + cards[selected_card["card_id"]]["name"])
-                                if selected_card["user_id"] != -1:
-                                    players[selected_card["user_id"]].add_currency(int(cost)) * config["tax"]
+                                    await message.channel.send("Item has already been purchased")
                             else:
-                                await message.channel.send("Item has already been purchased")
+                                if remove_listing(args[1], selected_card):
+                                    players[message.author.id].add_currency(-int(cost))
+                                    players[message.author.id].give_crate(selected_card["card_id"])
+                                    if message.author.id == selected_card["user_id"]:
+                                        await message.channel.send("You have removed your " + crates["crates"][selected_card["card_id"]]["name"] + " from the market")
+                                    else:
+                                        await message.channel.send("You have purchased a " + crates["crates"][selected_card["card_id"]]["name"])
+                                    if selected_card["user_id"] != -1:
+                                        players[selected_card["user_id"]].add_currency(int(cost)) * config["tax"]
+                                else:
+                                    await message.channel.send("Item has already been purchased")
                         else:
                             await message.channel.send("Hey you! You have NO monies!")
                 except Exception:
@@ -1098,9 +1178,6 @@ async def on_message(message):
             if message.author.id in config["administrators"]:
                 players[message.author.id].give_crate(args[1])
                 print("gave " + message.author.name + " a " + crates["crates"][args[1]]["name"])
-            
-        
-
 
 with open("./Bot/auth.json") as f:
     auth = json.load(f)

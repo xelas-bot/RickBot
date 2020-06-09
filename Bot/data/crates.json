@@ -16,13 +16,14 @@
         }
     },
     "crates": {
-        "weights": [20, 20, 10, 10, 10, 4, 4, 4, 4, 7, 7],
+        "weights": [30, 30, 15, 15, 15, 6, 6, 6, 10, 10, 10],
         "1" : {
             "name"      : "Common Crate",
             "desc"      : "Rolls 4 cards, Majority Common",
             "key"       : "1",
             "rolls"     : 4,
             "type"      : "Rarity",
+            "price"     : 200,
             "weights"   : [0.83, 0.10, 0.05, 0.015, 0.0049, 0.0001, 0]
         },
         "2" : {
@@ -31,6 +32,7 @@
             "key"       : "1",
             "rolls"     : 1,
             "type"      : "Rarity",
+            "price"     : 250,
             "weights"   : [0.9, 0, 0, 0.1, 0, 0, 0]
         },
         "3" : {
@@ -39,6 +41,7 @@
             "key"       : "2",
             "rolls"     : 10,
             "type"      : "Rarity",
+            "price"     : 500,
             "weights"   : [0.80, 0.14, 0.04, 0.015, 0.0049, 0.0001, 0]
         },
         "4" : {
@@ -47,6 +50,7 @@
             "key"       : "2",
             "rolls"     : 3,
             "type"      : "Rarity",
+            "price"     : 550,
             "weights"   : [0.17, 0.22, 0.40,  0.15,   0.057,  0.003, 0]
         },
         "5" : {
@@ -55,6 +59,7 @@
             "key"       : "2",
             "rolls"     : 1,
             "type"      : "Rarity",
+            "price"     : 600,
             "weights"   : [0.6, 0, 0,  0,   0.4,  0, 0]
         },
         "6" : {
@@ -63,6 +68,7 @@
             "key"       : "3",
             "rolls"     : 3,
             "type"      : "Rarity",
+            "price"     : 1000,
             "weights"   : [0.02, 0.15, 0.23,  0.20,   0.34,   0.05, 0.01]
         },
         "7" : {
@@ -71,6 +77,7 @@
             "key"       : "3",
             "rolls"     : 2,
             "type"      : "Rarity",
+            "price"     : 1500,
             "weights"   : [0   , 0   , 0   ,  0   ,   0.9,   0.085, 0.015]
         },
         "8" : {
@@ -79,7 +86,8 @@
             "key"       : "3",
             "rolls"     : 1,
             "type"      : "Rarity",
-            "weights"   : [0.7   , 0   , 0   ,  0   ,   0,   0.25, 0.05]
+            "price"     : 2000,
+            "weights"   : [0.6   , 0   , 0   ,  0   ,   0,   0.35, 0.05]
         },
         "9" : {
             "name"      : "Army Crate",
@@ -87,6 +95,7 @@
             "key"       : "2",
             "rolls"     : 1,
             "type"      : "Collection",
+            "price"     : 500,
             "weights"   : [5, 15, 30, 30, 20],
             "collection": "Army"
         },
@@ -96,6 +105,7 @@
             "key"       : "2",
             "rolls"     : 1,
             "type"      : "Collection",
+            "price"     : 500,
             "weights"   : [90, 45, 45, 90, 90, 10, 35, 10, 35, 90, 90, 90, 90, 90, 90],
             "collection": "Obese"
         },
@@ -105,6 +115,7 @@
             "key"       : "2",
             "rolls"     : 1,
             "type"      : "Collection",
+            "price"     : 500,
             "weights"   : [100, 25, 15, 70, 15],
             "collection": "Designer"
         }
