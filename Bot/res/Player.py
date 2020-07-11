@@ -7,38 +7,40 @@ import random
 from datetime import datetime, timedelta
 
 # auth
-with open("./Bot/auth.json") as f:
+with open("/home/pi/RickBot/Bot/auth.json") as f:
     auth = json.load(f)
     global cluster
     cluster = MongoClient(auth["mongo_key"])
     f.close()
 
 # cards
-with open("./Bot/data/cards.json") as f:
+with open("/home/pi/RickBot/Bot/data/cards.json") as f:
     global card_data
     card_data = json.load(f)
     f.close()
 
 # rarities
-with open("./Bot/data/card_rarity.json") as f:
+with open("/home/pi/RickBot/Bot/data/card_rarity.json") as f:
     global card_rarity
     card_rarity = json.load(f)
     f.close()
 
 # card config
-with open("./Bot/card_config.json") as f:
+with open("/home/pi/RickBot/Bot/card_config.json") as f:
     global card_config
     card_config = json.load(f)
     f.close()
 
 # crates config
-with open("./Bot/data/crates.json") as f:
+with open("/home/pi/RickBot/Bot/data/crates.json") as f:
     global crates_config
     crates_config = json.load(f)
     f.close()
 
 db = cluster["game"]
 collection = db["players"]
+
+print("success")
 
 class Player:
     def __init__(self, id, username, currency=100, cards=[], crates={}, keys={}, last_time=datetime.today() - timedelta(1)):

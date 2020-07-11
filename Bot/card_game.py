@@ -18,7 +18,7 @@ from datetime import datetime
 import time
 
 # Mongo auth
-with open("./Bot/auth.json") as f:
+with open("/home/pi/RickBot/Bot/auth.json") as f:
     auth = json.load(f)
     global cluster
     cluster = MongoClient(auth["mongo_key"])
@@ -37,25 +37,25 @@ def update_db_players():
         player.set_db()
 
 # card config
-with open("./Bot/card_config.json", encoding='utf-8') as f:
+with open("/home/pi/RickBot/Bot/card_config.json", encoding='utf-8') as f:
     global card_config
     card_config = json.load(f)
     f.close()
 
 # card data
-with open("./Bot/data/cards.json", encoding='utf-8') as f:
+with open("/home/pi/RickBot/Bot/data/cards.json", encoding='utf-8') as f:
     global cards
     cards = json.load(f)
     f.close()
 
 # help
-with open("./Bot/help.json") as f:
+with open("/home/pi/RickBot/Bot/help.json") as f:
     global help_msgs
     help_msgs = json.load(f)
     f.close()
 
 # config options
-with open('./Bot/config.json') as f:
+with open('/home/pi/RickBot/Bot/config.json') as f:
     global config
     config = json.load(f)
     f.close()
@@ -63,42 +63,42 @@ with open('./Bot/config.json') as f:
 #302515756976046081
 
 # crates
-with open('./Bot/data/crates.json') as f:
+with open('/home/pi/RickBot/Bot/data/crates.json') as f:
     global crates
     crates = json.load(f)
     f.close()
 
 # rarities
-with open("./Bot/data/card_rarity.json") as f:
+with open("/home/pi/RickBot/Bot/data/card_rarity.json") as f:
     global card_rarity
     card_rarity = json.load(f)
     f.close()
 
 # collections
-with open("./Bot/card_collections.json") as f:
+with open("/home/pi/RickBot/Bot/card_collections.json") as f:
     global collections_config
     collections_config = json.load(f)
     f.close()
 
 
 def update_things():
-    with open("./Bot/data/cards.json", encoding='utf-8') as f:
+    with open("/home/pi/RickBot/Bot/data/cards.json", encoding='utf-8') as f:
         global cards
         cards = json.load(f)
         f.close()
-    with open("./Bot/card_config.json", encoding='utf-8') as f:
+    with open("/home/pi/RickBot/Bot/card_config.json", encoding='utf-8') as f:
         global card_config
         card_config = json.load(f)
         f.close()
-    with open("./Bot/help.json") as f:
+    with open("/home/pi/RickBot/Bot/help.json") as f:
         global help_msgs
         help_msgs = json.load(f)
         f.close()
-    with open('./Bot/config.json') as f:
+    with open('/home/pi/RickBot/Bot/config.json') as f:
         global config
         config = json.load(f)
         f.close()
-    with open("./Bot/data/card_rarity.json") as f:
+    with open("/home/pi/RickBot/Bot/data/card_rarity.json") as f:
         global card_rarity
         card_rarity = json.load(f)
         f.close()
@@ -120,7 +120,7 @@ def update_market():
     return market
 
 def create_listing(user_id, card_price, card_id):
-    listing = {"user_id": user_id, "card_price": card_price, "card_id": card_id}
+    listing = {"user_id": user_id, "card_price": card_price, "card_id": card_id, "type": "card"}
     db_market.insert_one(listing)
 
 def remove_listing(listing_id, verify):
@@ -184,7 +184,7 @@ def check_rarity(card):
     return "Error"
 
 
-with open('./Bot/data/market_bot.json') as f:
+with open('/home/pi/RickBot/Bot/data/market_bot.json') as f:
     global market_bot
     market_bot = json.load(f)
     f.close()
@@ -1179,7 +1179,7 @@ async def on_message(message):
                 players[message.author.id].give_crate(args[1])
                 print("gave " + message.author.name + " a " + crates["crates"][args[1]]["name"])
 
-with open("./Bot/auth.json") as f:
+with open("/home/pi/RickBot/Bot/auth.json") as f:
     auth = json.load(f)
     bot.run(auth["token"])
     f.close()
