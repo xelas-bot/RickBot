@@ -1,2 +1,2 @@
 # RickBot
- A bot for ricks
+ A bot that does it all.
