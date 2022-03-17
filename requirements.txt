@@ -4,3 +4,6 @@ dnspython
 schedule
 numpy
 dnspython
+coincurve
+pysha3
+secrets
