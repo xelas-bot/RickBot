@@ -13,7 +13,7 @@ champions = base_na1 + "/lol/platform/v3/champion-rotations"
 curr_match = base_na1 + "/lol/spectator/v4/active-games/by-summoner/" + SUMMONER_ID
 
 def match_list_by_puuid(puuid):
-    return base_americas + '/lol/match/v5/matches/by-puuid/{puuid}/ids'.format(puuid = puuid)
+    return base_americas + '/lol/match/v5/matches/by-puuid/{puuid}/ids'.format(puuid = puuid)   
 
 def match_url_by_id(matchid):
     return base_americas + '/lol/match/v5/matches/{matchId}'.format(matchId = matchid)
@@ -53,4 +53,25 @@ def pull_recent_games(puuid):
     with open('{puuid}_games.json'.format(puuid=puuid), 'w', encoding='utf-8') as f:
         json.dump(match_list, f, ensure_ascii=False, indent=4)
 
-pull_recent_games(PUUID)
+def calculate_general_stats(puuid):
+    f = open('{puuid}_games.json'.format(puuid = puuid))
+    player_data = json.load(f) 
+    data = {}
+    
+    # There's a better way to do this but I am too lazy to implement it
+    data['average_kda'] = sum([player_data[keys]['challenges']['kda'] for keys in list(player_data.keys())[1:]]) / 20
+    champs_played = {}
+    champs_played = {player_data[key]['championName'] : champs_played['championName'] + 1 if player_data[key]['championName'] in champs_played else 1 for key in list(player_data.keys())[1:]}
+    data['most_played_champ'] = max(champs_played, key=champs_played.get)
+    data['win_rate'] = sum([int(player_data[keys]['win']) for keys in list(player_data.keys())[1:]]) / 20
+    data['average_cpm'] = sum([player_data[keys]['totalMinionsKilled'] / (player_data[keys]['timePlayed'] / 60) for keys in list(player_data.keys())[1:]]) / 20
+    roles = {}
+    roles = {player_data[key]['role'] : champs_played['role'] + 1 if player_data[key]['role'] in champs_played else 1 for key in list(player_data.keys())[1:]}
+    data['most_played_role'] = max(roles, key=roles.get)
+    data['longest_time_alive'] = max([player_data[keys]['longestTimeSpentLiving'] for keys in list(player_data.keys())[1:]])
+
+    return data
+
+#pull_recent_games(PUUID)
+d = calculate_general_stats(puuid=PUUID)
+print(d)
