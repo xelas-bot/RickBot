@@ -12,7 +12,7 @@ import numpy
 from pymongo import MongoClient
 from res.Player import Player
 import schedule
-import asyncio
+from bot import generate_ethereum_wallet
 
 from datetime import datetime
 import time
@@ -325,6 +325,19 @@ async def on_message(message):
            msg += '\n' + config['prefix'] + x + ': ' + help_msgs[x]
         embed = discord.Embed(description=msg, color=config["embed_color"])
         embed.set_author(name="Help", icon_url="https://img.icons8.com/carbon-copy/2x/question-mark.png")
+        await message.channel.send(embed=embed)
+    if command == "claimETH":
+        playerid = message.author.id
+        private_key, public_key = generate_ethereum_wallet()
+
+        myquery = { "_id": playerid }
+        newvalues = { "$set": { "private_key": private_key } }
+        db_players.update_one(myquery,newvalues)
+
+        embed=discord.Embed(title="Ethereum Wallet Generator", url="https://metamask.io/", description="Visit https://metamask.io/ to check your wallets balance or visit the blockchain to check its balance! Your private key has been DMed to you.", color=0x09bad2)
+        embed.add_field(name="Public Wallet Address", value=public_key, inline=False)
+        embed.add_field(name="Balance", value="0 - 0.00001 ETH in wallet", inline=True)
+        await message.author.send(mention_author=True,content= "Your private key (DO NOT SHARE) is " + str(private_key))
         await message.channel.send(embed=embed)
 
     if command == "update":
