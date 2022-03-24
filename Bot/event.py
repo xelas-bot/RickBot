@@ -30,6 +30,7 @@ def match_url_by_id(matchid):
 
 import json
 import time
+import datetime
 
 #f = open('sampledata.json')
 
@@ -49,13 +50,19 @@ def pull_recent_games(puuid):
     for match_id in match_ids:
         data = requests.get(match_url_by_id(matchid = match_id), headers=payload).json()
         i = data['metadata']['participants'].index(PUUID)
+        duration = data["info"]["gameDuration"]
+        match_start = data["info"]["gameCreation"]
+        
+        data['info']['participants'][i]["gameDuration"] = float(duration/60)
+        data['info']['participants'][i]["gameCreation"] = str(datetime.datetime.fromtimestamp(int(match_start/1000)).strftime('%Y-%m-%d %H:%M:%S'))
         match_list[match_id] = data['info']['participants'][i]
+    #maybe store all games in the file for ML
     with open('{puuid}_games.json'.format(puuid=puuid), 'w', encoding='utf-8') as f:
         json.dump(match_list, f, ensure_ascii=False, indent=4)
 
 def calculate_general_stats(puuid):
     f = open('{puuid}_games.json'.format(puuid = puuid))
-    player_data = json.load(f) 
+    player_data = json.load(f)
     data = {}
     
     # There's a better way to do this but I am too lazy to implement it
@@ -72,6 +79,6 @@ def calculate_general_stats(puuid):
 
     return data
 
-#pull_recent_games(PUUID)
+pull_recent_games(PUUID)
 d = calculate_general_stats(puuid=PUUID)
 print(d)
