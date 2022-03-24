@@ -94,16 +94,15 @@ async def build_embed(ctx):
     # summonerV4
     prof_id = player_data[SUMMONER_ID]['prof_info']['profileIconId']
     rank = player_data[SUMMONER_ID]['ranked_info'][1]['tier']
-
-    file_path = f'attachment://data/LOLDATA/icons/emblem_{rank}.png'
-
+    file_path = f'data/LOLDATA/icons/emblem_{rank}.png'
+    file = discord.File(file_path, filename='rank.png')
 
     data = calculate_general_stats(PUUID)
     embed = discord.Embed(title='dlzStats', description='Your last 20 games')
     embed.set_author(name=SUM_NAME,icon_url = get_profile_endpoint(prof_id))
-    embed.set_thumbnail(url=file_path)
+    embed.set_thumbnail(url='attachment://rank.png')
     for d in data:
         embed.add_field(name=d, value=data[d], inline=True)
-    await ctx.send(embed=embed)
+    await ctx.send(file = file, embed=embed)
 
 

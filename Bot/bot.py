@@ -5,13 +5,13 @@ import random
 import shlex
 import asyncio
 from discord.ext.commands import Bot
-import pymongo
-from pymongo import MongoClient
+#import pymongo
+#from pymongo import MongoClient
 import urllib.parse
 import json
 from secrets import token_bytes
-from coincurve import PublicKey
-from sha3 import keccak_256
+#from coincurve import PublicKey
+#from sha3 import keccak_256
 import random
 
 from event import build_embed, pull_recent_games
@@ -21,7 +21,7 @@ playerCreated = False
 with open("auth.json") as f:
     auth = json.load(f)
     global cluster
-    cluster = MongoClient(auth["mongo_key"])
+    #cluster = MongoClient(auth["mongo_key"])
 
 # config options
 with open('config.json') as f:
@@ -30,10 +30,10 @@ with open('config.json') as f:
     prefix = config['prefix']
     f.close()
 
-db = cluster["game"]
+#db = cluster["game"]
 
-collection = db["players"]
-playerinfo = db["playerinfo"]
+#collection = db["players"]
+#playerinfo = db["playerinfo"]
 
 # Auth bot
 bot = Bot(prefix)
