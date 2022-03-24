@@ -1,14 +1,23 @@
+import profile
 import requests
+import json
+import time
+from collections import Counter
+import datetime
 
 SUMMONER_ID = "5g7AofZD7-9SPHDovoqHl-wp3oqD7d3hoKjpxyHCeNTtQOU"
 PUUID = "7p-tNgLl0yuLm4LSafNuRtsz2SIpTLdQ5ZW-ril-t5sHMqD6U3hu7XIGWn4UnRoyCCTxCo2nQg5wug"
-
+SUM_NAME = 'dlz9345'
 base_na1= "https://na1.api.riotgames.com"
 base_americas = 'https://americas.api.riotgames.com'
 payload = { 'X-Riot-Token' : 'RGAPI-1d397228-52bc-446c-8263-22abaa0a9ca9'}
 
+
 champions = base_na1 + "/lol/platform/v3/champion-rotations"
 curr_match = base_na1 + "/lol/spectator/v4/active-games/by-summoner/" + SUMMONER_ID
+
+def get_profile_endpoint(id):
+   return f'http://ddragon.leagueoflegends.com/cdn/12.5.1/img/profileicon/{id}.png'
 
 def match_list_by_puuid(puuid):
     return base_americas + '/lol/match/v5/matches/by-puuid/{puuid}/ids'.format(puuid = puuid)   
@@ -16,12 +25,24 @@ def match_list_by_puuid(puuid):
 def match_url_by_id(matchid):
     return base_americas + '/lol/match/v5/matches/{matchId}'.format(matchId = matchid)
 
-import json
-import time
-from collections import Counter
-import datetime
+def profile_info(sum_name):
+    return base_na1 + f'/lol/summoner/v4/summoners/by-name/{sum_name}'
+def profile_info_ranked(sum_id):
+    return base_na1 + f'/lol/league/v4/entries/by-summoner/{sum_id}'
+
+
+def pull_profile_info(sum_id=SUMMONER_ID):
+    #fix this if you need more users
+    p_info = {SUMMONER_ID : {}}
+    p_info[SUMMONER_ID]['prof_info'] = requests.get(profile_info(SUM_NAME), headers=payload).json()
+    p_info[SUMMONER_ID]['ranked_info'] = requests.get(profile_info_ranked(sum_id), headers=payload).json()
+    with open('data/LOLDATA/user_data/users.json', 'w', encoding='utf-8') as f:
+        json.dump(p_info, f, ensure_ascii=False, indent=4)
+
+
 
 def pull_recent_games(puuid=PUUID):
+    pull_profile_info(SUMMONER_ID)
     match_list = {}
     match_list['last-update'] = time.time()
     match_ids = requests.get(match_list_by_puuid(puuid), headers=payload).json()
@@ -67,10 +88,22 @@ def calculate_general_stats(puuid):
 import discord
 
 async def build_embed(ctx):
+    
+    f = open('data/LOLDATA/user_data/users.json')
+    player_data = json.load(f)
+    # summonerV4
+    prof_id = player_data[SUMMONER_ID]['prof_info']['profileIconId']
+    rank = player_data[SUMMONER_ID]['ranked_info'][1]['tier']
+
+    file_path = f'attachment://data/LOLDATA/icons/emblem_{rank}.png'
+
+
     data = calculate_general_stats(PUUID)
-    embed = discord.Embed(title='Title', description='Your last 20 games')
-    embed.set_author(name='dlz9345')
+    embed = discord.Embed(title='dlzStats', description='Your last 20 games')
+    embed.set_author(name=SUM_NAME,icon_url = get_profile_endpoint(prof_id))
+    embed.set_thumbnail(url=file_path)
     for d in data:
         embed.add_field(name=d, value=data[d], inline=True)
     await ctx.send(embed=embed)
+
 

@@ -1,0 +1,45 @@
+{
+    "5g7AofZD7-9SPHDovoqHl-wp3oqD7d3hoKjpxyHCeNTtQOU": {
+        "prof_info": {
+            "id": "5g7AofZD7-9SPHDovoqHl-wp3oqD7d3hoKjpxyHCeNTtQOU",
+            "accountId": "IaGXuyM9Wfmd9lmkLNehnRVy-iOx2-GAcAQ2NXnpokD8ckE",
+            "puuid": "7p-tNgLl0yuLm4LSafNuRtsz2SIpTLdQ5ZW-ril-t5sHMqD6U3hu7XIGWn4UnRoyCCTxCo2nQg5wug",
+            "name": "dlz9345",
+            "profileIconId": 26,
+            "revisionDate": 1647664565000,
+            "summonerLevel": 89
+        },
+        "ranked_info": [
+            {
+                "leagueId": "93ada8f9-a5cc-43a9-8e48-8efad35761d1",
+                "queueType": "RANKED_FLEX_SR",
+                "tier": "BRONZE",
+                "rank": "I",
+                "summonerId": "5g7AofZD7-9SPHDovoqHl-wp3oqD7d3hoKjpxyHCeNTtQOU",
+                "summonerName": "dlz9345",
+                "leaguePoints": 31,
+                "wins": 7,
+                "losses": 3,
+                "veteran": false,
+                "inactive": false,
+                "freshBlood": false,
+                "hotStreak": false
+            },
+            {
+                "leagueId": "677629a4-4e8d-4053-ade0-c095b9c36cd1",
+                "queueType": "RANKED_SOLO_5x5",
+                "tier": "BRONZE",
+                "rank": "II",
+                "summonerId": "5g7AofZD7-9SPHDovoqHl-wp3oqD7d3hoKjpxyHCeNTtQOU",
+                "summonerName": "dlz9345",
+                "leaguePoints": 14,
+                "wins": 3,
+                "losses": 8,
+                "veteran": false,
+                "inactive": false,
+                "freshBlood": false,
+                "hotStreak": false
+            }
+        ]
+    }
+}
