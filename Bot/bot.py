@@ -14,7 +14,7 @@ from coincurve import PublicKey
 from sha3 import keccak_256
 import random
 
-from event import build_embed
+from event import build_embed, pull_recent_games
 
 playerCreated = False
 
@@ -170,6 +170,11 @@ async def roll(ctx, *args):
 @bot.command()
 async def pickone(ctx, *args):
     await ctx.send('Picked \'{}\''.format(random.choice(args)))
+
+@bot.command()
+async def updatestats(ctx):
+    pull_recent_games()
+    await ctx.send('Updated Games')
 
 @bot.command()
 async def stalklol(ctx):
