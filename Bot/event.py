@@ -19,6 +19,7 @@ def match_url_by_id(matchid):
 import json
 import time
 from collections import Counter
+import datetime
 
 def pull_recent_games(puuid=PUUID):
     match_list = {}
@@ -27,7 +28,13 @@ def pull_recent_games(puuid=PUUID):
     for match_id in match_ids:
         data = requests.get(match_url_by_id(matchid = match_id), headers=payload).json()
         i = data['metadata']['participants'].index(PUUID)
+        duration = data["info"]["gameDuration"]
+        match_start = data["info"]["gameCreation"]
+        
+        data['info']['participants'][i]["gameDuration"] = float(duration/60)
+        data['info']['participants'][i]["gameCreation"] = str(datetime.datetime.fromtimestamp(int(match_start/1000)).strftime('%Y-%m-%d %H:%M:%S'))
         match_list[match_id] = data['info']['participants'][i]
+    #maybe store all games in the file for ML
     with open('{puuid}_games.json'.format(puuid=puuid), 'w', encoding='utf-8') as f:
         json.dump(match_list, f, ensure_ascii=False, indent=4)
         f.close()
