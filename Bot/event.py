@@ -1,5 +1,3 @@
-import profile
-from aiohttp import request
 import requests
 import json
 import time
@@ -40,7 +38,7 @@ def pull_profile_info(sum_id=SUMMONER_ID):
     p_info = {SUMMONER_ID : {}}
     p_info[SUMMONER_ID]['prof_info'] = requests.get(profile_info(SUM_NAME), headers=payload).json()
     p_info[SUMMONER_ID]['ranked_info'] = requests.get(profile_info_ranked(sum_id), headers=payload).json()
-    with open('data/LOLDATA/user_data/users.json', 'w', encoding='utf-8') as f:
+    with open('Bot/data/LOLDATA/user_data/users.json', 'w', encoding='utf-8') as f:
         json.dump(p_info, f, ensure_ascii=False, indent=4)
 
 def pull_recent_games(puuid=PUUID):
@@ -91,7 +89,7 @@ import discord
 
 async def build_embed(ctx):
     
-    f = open('data/LOLDATA/user_data/users.json')
+    f = open('Bot/data/LOLDATA/user_data/users.json')
     player_data = json.load(f)
     # summonerV4
     prof_id = player_data[SUMMONER_ID]['prof_info']['profileIconId']
@@ -109,5 +107,5 @@ async def build_embed(ctx):
 
 def get_spectator_info(sum_id=SUMMONER_ID):
     data = requests.get(get_spectator_endpoint(sum_id=sum_id), headers=payload).json()
-    print(data)
+    # print(data)
     return data
