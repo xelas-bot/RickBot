@@ -1,4 +1,5 @@
 import profile
+from aiohttp import request
 import requests
 import json
 import time
@@ -27,9 +28,12 @@ def match_url_by_id(matchid):
 
 def profile_info(sum_name):
     return base_na1 + f'/lol/summoner/v4/summoners/by-name/{sum_name}'
+
 def profile_info_ranked(sum_id):
     return base_na1 + f'/lol/league/v4/entries/by-summoner/{sum_id}'
 
+def get_spectator_endpoint(sum_id):
+    return base_na1 + '/lol/spectator/v4/active-games/by-summoner/{encryptedSummonerId}'.format(encryptedSummonerId=sum_id)
 
 def pull_profile_info(sum_id=SUMMONER_ID):
     #fix this if you need more users
@@ -38,8 +42,6 @@ def pull_profile_info(sum_id=SUMMONER_ID):
     p_info[SUMMONER_ID]['ranked_info'] = requests.get(profile_info_ranked(sum_id), headers=payload).json()
     with open('data/LOLDATA/user_data/users.json', 'w', encoding='utf-8') as f:
         json.dump(p_info, f, ensure_ascii=False, indent=4)
-
-
 
 def pull_recent_games(puuid=PUUID):
     pull_profile_info(SUMMONER_ID)
@@ -105,4 +107,7 @@ async def build_embed(ctx):
         embed.add_field(name=d, value=data[d], inline=True)
     await ctx.send(file = file, embed=embed)
 
-
+def get_spectator_info(sum_id=SUMMONER_ID):
+    data = requests.get(get_spectator_endpoint(sum_id=sum_id), headers=payload).json()
+    print(data)
+    return data
