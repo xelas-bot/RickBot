@@ -6,8 +6,8 @@
             "puuid": "7p-tNgLl0yuLm4LSafNuRtsz2SIpTLdQ5ZW-ril-t5sHMqD6U3hu7XIGWn4UnRoyCCTxCo2nQg5wug",
             "name": "dlz9345",
             "profileIconId": 26,
-            "revisionDate": 1647664565000,
-            "summonerLevel": 89
+            "revisionDate": 1648368069000,
+            "summonerLevel": 91
         },
         "ranked_info": [
             {
@@ -41,5 +41,17 @@
                 "hotStreak": false
             }
         ]
+    },
+    "c0a5Ae_cVi5iX5eme6reszNql7OGOS2fsgFWyAS41FoIgCE": {
+        "prof_info": {
+            "id": "c0a5Ae_cVi5iX5eme6reszNql7OGOS2fsgFWyAS41FoIgCE",
+            "accountId": "caxwG1WTDJo0IcjQDApcwnLZFJOFWQaroryANI2JiQCPhok",
+            "puuid": "R7ChOwYTnTn4i87xFAlM43MinR9CLixoZO_meyRrNTVThEz4qer03mkF4uX_VhRPMdXxspAdFxb7_A",
+            "name": "new heartbreak",
+            "profileIconId": 3376,
+            "revisionDate": 1648182799000,
+            "summonerLevel": 153
+        },
+        "ranked_info": []
     }
 }

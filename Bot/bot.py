@@ -13,6 +13,11 @@ states = {
     'ongoing_bet' : False
 }
 
+# load userdata
+with open('Bot/data/userdata/userdata.json', encoding='utf8') as f:
+    global userdata
+    userdata = json.load(f)
+
 # load champion data
 with open('Bot/data/LOLDATA/champion.json', encoding='utf8') as f:
     global LOL_CHAMPION_INFO
@@ -33,7 +38,7 @@ async def on_ready():
 
 @bot.event
 async def on_member_update(before, after):
-    if before.name == '<discord name>':
+    if before.id == 348149413618647040:
         if after.activities:
             after_activity = next(activity for activity in after.activities)
             if after_activity.start:
@@ -41,7 +46,7 @@ async def on_member_update(before, after):
                     print('{} started playing {} at {}'.format(after.name, after_activity.name, after_activity.start))
                     states['in_game'] = True
                     if after_activity.name == 'League of Legends':
-                        sum_id = '<encrypted summonerid>'
+                        sum_id = userdata[str(after.id)]['summonerId']
                         info = get_spectator_info(sum_id=sum_id)
                         player = next(participant for participant in info['participants'] if participant['summonerId'] == sum_id)
                         champion = next(champ for champ in LOL_CHAMPION_INFO if LOL_CHAMPION_INFO[champ]['key'] == str(player['championId']))
@@ -69,13 +74,13 @@ async def pickone(ctx, *args):
     await ctx.send('Picked \'{}\''.format(random.choice(args)))
 
 @bot.command()
-async def updatestats(ctx):
-    pull_recent_games()
+async def updatestats(ctx, *args):
+    pull_recent_games(ctx, *args)
     await ctx.send('Updated Games')
 
 @bot.command()
-async def stalklol(ctx):
-    await build_embed(ctx)
+async def stalklol(ctx, *args):
+    await build_embed(ctx, *args)
  
 with open("bot/auth.json") as f:
     auth = json.load(f)
