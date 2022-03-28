@@ -6,7 +6,7 @@ import json
 import random
 from datetime import datetime, timezone
 
-from event import build_embed, pull_recent_games, get_spectator_info
+from event import build_embed, pull_recent_games, get_spectator_info, bind_user
 
 states = {
     'in_game' : False,
@@ -81,7 +81,11 @@ async def updatestats(ctx, *args):
 @bot.command()
 async def stalklol(ctx, *args):
     await build_embed(ctx, *args)
- 
+
+@bot.command()
+async def bind(ctx, *args):
+    bind_user(ctx, *args)
+
 with open("bot/auth.json") as f:
     auth = json.load(f)
     bot.run(auth["token"])
